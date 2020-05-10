@@ -1,32 +1,34 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.util.LogPrinter;
 import android.widget.Button;
 
 import com.aldebaran.qi.Future;
 import com.aldebaran.qi.sdk.QiContext;
 import com.aldebaran.qi.sdk.QiSDK;
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks;
-import com.aldebaran.qi.sdk.builder.ChatBuilder;
+import com.aldebaran.qi.sdk.builder.AnimateBuilder;
+import com.aldebaran.qi.sdk.builder.AnimationBuilder;
 import com.aldebaran.qi.sdk.builder.EnforceTabletReachabilityBuilder;
-import com.aldebaran.qi.sdk.builder.QiChatbotBuilder;
+import com.aldebaran.qi.sdk.builder.ListenBuilder;
+import com.aldebaran.qi.sdk.builder.PhraseSetBuilder;
 import com.aldebaran.qi.sdk.builder.SayBuilder;
-import com.aldebaran.qi.sdk.builder.TopicBuilder;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy;
+import com.aldebaran.qi.sdk.object.actuation.Animate;
+import com.aldebaran.qi.sdk.object.actuation.Animation;
 import com.aldebaran.qi.sdk.object.actuation.EnforceTabletReachability;
-import com.aldebaran.qi.sdk.object.conversation.Chat;
-import com.aldebaran.qi.sdk.object.conversation.QiChatbot;
+import com.aldebaran.qi.sdk.object.conversation.Listen;
+import com.aldebaran.qi.sdk.object.conversation.ListenResult;
+import com.aldebaran.qi.sdk.object.conversation.PhraseSet;
 import com.aldebaran.qi.sdk.object.conversation.Say;
-import com.aldebaran.qi.sdk.object.conversation.Topic;
 
 public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
 
     private QiContext qiContext;
     private static final String TAG = "Main_Activity";
+    private boolean isInfoPointActive = false;
 
     //region Tablet Reachability variables
     private Button tabletReachabilitybutton;
@@ -37,13 +39,12 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
 
     //region QiChatbot variables
     public boolean isGreetings = true;
-    public boolean isMainDiscussion = false;
-    private QiChatbot qiChatbot;
-    private Topic greetingTopic;
-    private Chat greetingChat;
-    private Future<Void> greetingChatFuture;
     //endregion
 
+    //region Animation variables
+    private Animate greetingAnimation;
+    private Animate goodbyeAnimation;
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,26 +87,43 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         initActions();
 
         //Initialize chats
-        initChat();
+
+        //Initialize animations
+        initAnimations();
 
     }
 
-    private void initChat() {
+    private void initAnimations() {
         if(isGreetings){
-            greetingTopic = TopicBuilder.with(qiContext).withResource(R.raw.greetings).build();
-            qiChatbot = QiChatbotBuilder.with(qiContext).withTopic(greetingTopic).build();
-            greetingChat = ChatBuilder.with(qiContext).withChatbot(qiChatbot).build();
-            greetingChat.addOnStartedListener(()-> Log.i(TAG, "Discussion started."));
-            //Start greetings chat
-            startGreetingsChat();
-            isGreetings = false;
-        }else if(isMainDiscussion){
-            //TO-DO
-            //Main topic of discussion
-        }else{
-            //TO-DO
-            //Regards
+            Animation greetingAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.greet).build();
+            greetingAnimation = AnimateBuilder.with(qiContext).withAnimation(greetingAnimationObject).build();
+            //As soon as the animation starts, Pepper greets vocally the user
+            greetingAnimation.addOnStartedListener(()->{
+                Say greet = SayBuilder.with(qiContext).withText("Hi do you need any help?").build();
+                greet.async().run();
+            });
+            //Execute animation
+            Future<Void> greetingAnimateFuture = greetingAnimation.async().run();
+            //Listen to human answer
+            PhraseSet response = PhraseSetBuilder.with(qiContext).withTexts("Yes", "No").build(); //Create set of words to look for in user's answer
+            Listen listen = ListenBuilder.with(qiContext).withPhraseSet(response).build();
+            ListenResult result = listen.run();
+            //If the response contains "yes"
+            if( (result.getHeardPhrase().getText().toLowerCase()).equals("yes")){
+                //Need to start an info point chat bot
+                isInfoPointActive = true;
+            }else if( (result.getHeardPhrase().getText().toLowerCase()).equals("no")){
+                //No help is required, so we need to thank the user
+                Animation goodbyeAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.goodbye).build();
+                goodbyeAnimation = AnimateBuilder.with(qiContext).withAnimation(goodbyeAnimationObject).build();
+                goodbyeAnimation.addOnStartedListener(()->{
+                    Say goodbye = SayBuilder.with(qiContext).withText("See you soon!").build();
+                    goodbye.async().run();
+                });
+                Future<Void> goodByeAnimateFuture = goodbyeAnimation.async().run();
+            }
         }
+
     }
 
     private void initActions() {
@@ -120,8 +138,8 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         this.qiContext = null;
 
         //Remove all the listeners
-        if(greetingChat != null){
-            greetingChat.removeAllOnStartedListeners();
+        if(greetingAnimation != null){
+            greetingAnimation.removeAllOnStartedListeners();
         }
     }
 
@@ -138,12 +156,4 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         });
     }
 
-    private void startGreetingsChat(){
-        greetingChatFuture = greetingChat.async().run();
-        greetingChatFuture.thenConsume(future->{
-            if (future.hasError()) {
-                Log.e(TAG, "Discussion finished with error.", future.getError());
-            }
-        });
-    }
 }

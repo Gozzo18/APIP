@@ -1,4 +1,4 @@
-topic: ~greetings()
+topic: ~approach()
 concept: (hello) [hello hi hey "good morning"]
 u:(~hello) ~hello
 # Defining extra concepts out of words or group of words
