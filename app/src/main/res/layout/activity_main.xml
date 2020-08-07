@@ -6,15 +6,47 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/tablet_reachability_button"
-        android:layout_width="608dp"
-        android:layout_height="267dp"
-        android:layout_marginStart="152dp"
-        android:layout_marginBottom="140dp"
-        android:text="Enforce tablet reachability"
-        android:textSize="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_marginTop="98dp"
+        android:text="Ciao! Sono Pepper, ti serve una mano?"
+        android:textAlignment="center"
+        android:textSize="8mm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/button_yes"
+        android:layout_width="275dp"
+        android:layout_height="256dp"
+        android:layout_marginBottom="146dp"
+        android:layout_marginEnd="16dp"
+        android:text="SI"
+        android:textSize="15mm"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/custom_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_no"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <Button
+        android:id="@+id/button_no"
+        android:layout_width="275dp"
+        android:layout_height="256dp"
+        android:layout_marginBottom="146dp"
+        android:text="NO"
+        android:textSize="15mm"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/custom_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_yes"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

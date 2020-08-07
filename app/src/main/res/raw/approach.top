@@ -1,8 +1,13 @@
 topic: ~approach()
-concept: (hello) [hello hi hey "good morning"]
-u:(~hello) ~hello
-# Defining extra concepts out of words or group of words
-#concept:(hello) [hello hi hey "good morning" greetings]
 
-# Replying to speech
-#u:(~hello) ~hello
+concept: (help) [help support aid assistance aid hand "helping hand" assist problem]
+concept: (directions) [way route path course line track direction]
+concept: (small_talk) [time weather date]
+
+u: (~directions) You need directions, alright we are here.
+u: (time) It's eleven o' clock.
+u: (weather) It's sunny.
+u: (date) It's Monday.
+
+
+
