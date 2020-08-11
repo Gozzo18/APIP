@@ -3,7 +3,9 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.aldebaran.qi.Future;
 import com.aldebaran.qi.sdk.QiContext;
@@ -25,10 +27,13 @@ import com.aldebaran.qi.sdk.object.actuation.Animation;
 import com.aldebaran.qi.sdk.object.conversation.Chat;
 import com.aldebaran.qi.sdk.object.conversation.Listen;
 import com.aldebaran.qi.sdk.object.conversation.ListenResult;
+import com.aldebaran.qi.sdk.object.conversation.Phrase;
 import com.aldebaran.qi.sdk.object.conversation.PhraseSet;
 import com.aldebaran.qi.sdk.object.conversation.QiChatbot;
 import com.aldebaran.qi.sdk.object.conversation.Say;
 import com.aldebaran.qi.sdk.object.conversation.Topic;
+
+import java.util.List;
 
 public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
 
@@ -46,6 +51,8 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     private Topic helpNeeded_topic;
     private Chat helpNeeded_chat;
     //endregion
+
+    public Future<ListenResult> listen_result_future;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,25 +91,35 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         animation_future = greeting_animation.async().run();
         //After the animation is finished, wait for human input
         animation_future.andThenConsume(chatting ->{
-            PhraseSet response = PhraseSetBuilder.with(qiContext).withTexts("Si", "No").build(); //Create set of words to look for in user's answer
-            Listen listen = ListenBuilder.with(qiContext).withPhraseSet(response).build();
-            //Pepper start listening
-            ListenResult result = listen.run();
-            //If the response contains "yes"
-            if( (result.getHeardPhrase().getText().toLowerCase()).equals("si")){
-            //User need helps, Pepper start discussing with it
-                helpNeeded_chat.async().run();
-            //Otherwise
-            }else if( (result.getHeardPhrase().getText().toLowerCase()).equals("no")){
-            //No help is required, Pepper says goodbye
-               animation_future = goodbye_animation.async().run();
-               //A new user comes by - Restart scenario
-                animation_future.andThenConsume(restart->{
-                   Log.i(TAG, "Interaction ended. Restarting.");
-                   //Restart by starting this same activity
-                   startActivity(new Intent(this, MainActivity.class));
-               });
-            }
+            //Create set of words to look for in user's answer
+            PhraseSet response = PhraseSetBuilder.with(qiContext).withTexts("Si", "No").build();
+            //Build asynchronously the Listen action
+            Future<Listen> listen_future = ListenBuilder.with(qiContext).withPhraseSet(response).buildAsync();
+            //Consume the listen action
+            listen_future.andThenConsume(listen->{
+                //The listen action is running, store the heard phrase inside an asynchronous object Future<ListenResult>
+                listen_result_future = listen.async().run();
+                //Consume the result of the listen action
+                listen_result_future.andThenConsume(heard_phrase->{
+                    //If what Pepper heard contains "yes"
+                    if( (heard_phrase.getHeardPhrase().getText().toLowerCase()).equals("si")){
+                        //User need helps, pass to another activity
+                        Intent changeActivity = new Intent(this, Disability.class);
+                        startActivity(changeActivity);
+                    //Otherwise
+                    }else if( (heard_phrase.getHeardPhrase().getText().toLowerCase()).equals("no")){
+                        //No help is required, Pepper says goodbye
+                        animation_future = goodbye_animation.async().run();
+                        //A new user comes by - Restart scenario
+                        animation_future.andThenConsume(restart->{
+                            Log.i(TAG, "Interaction ended. Restarting.");
+                            //Restart by starting this same activity
+                            startActivity(new Intent(this, MainActivity.class));
+                        });
+                    }
+                });
+
+            });
         });
     }
 
@@ -180,29 +197,29 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     }
 
     private void initUiElements(){
+
+        final TextView textView = (TextView)findViewById(R.id.textView2);
+
         final Button button_yes = findViewById(R.id.button_yes);
         button_yes.setOnClickListener(v -> {
             Intent changeActivity = new Intent(this, Disability.class);
             startActivity(changeActivity);
         });
 
-        /*final Button button_no = findViewById(R.id.button_no);
+        final Button button_no = findViewById(R.id.button_no);
         button_no.setOnClickListener(v->{
-            Future<Void> goodByeAnimateFuture = goodbyeAnimation.async().run();
-            //Intent restart = new Intent(this, MainActivity.class);
-            //startActivity(restart);
-        });*/
+            button_yes.setVisibility(View.GONE);
+            button_no.setVisibility(View.GONE);
+            textView.setText("Ci vediamo!");
+            //Stop listening
+            listen_result_future.requestCancellation();
+            //Help is refused - Restart scenario
+            animation_future = goodbye_animation.async().run();
+            animation_future.andThenConsume(restart->{
+                Log.i(TAG, "Interaction ended. Restarting.");
+                //Restart by starting this same activity
+                startActivity(new Intent(this, MainActivity.class));
+            });
+        });
     }
-
-
-    /*public void sendMessage(View view){
-        Log.e("myTag", "Entrato");
-        Intent intent = new Intent(this, Main2Activity.class);
-        EditText editText = (EditText) findViewById(R.id.editText);
-        String message = editText.getText().toString();
-        Log.e("message", message);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-
-    }*/
 }

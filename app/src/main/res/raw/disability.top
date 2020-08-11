@@ -1,0 +1,10 @@
+topic: ~disability()
+# Defining extra concepts out of words or group of words
+concept:(blindness) [cieco non vedente ipovedente "problemi visivi" "alla vista" daltonico]
+concept:(deafness) [sordo "non udente" audioleso]
+concept:(physical_disabilities) [mutilato "un braccio" "una mano" dita dito zoppo paralizzato]
+
+# Replying to speech
+u:(* ~blindness) Cercherò di parlare il più chiaramente possibile!
+u:(* ~deafness) Ti mostrerò le informazioni sul mio tablet!
+u:(* ~physical_disabilities) Eviterò di utilizzare il tablet.
