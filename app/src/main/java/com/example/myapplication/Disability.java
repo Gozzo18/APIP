@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,23 +28,13 @@ import com.aldebaran.qi.sdk.object.conversation.Topic;
 
 public class Disability extends RobotActivity implements RobotLifecycleCallbacks {
 
+    private static final String TAG = "Disability";
     private QiContext qiContext;
-    private boolean isMute = false;
-    private boolean isDeaf = false;
-    private boolean isBlind = false;
-    private boolean isAlmostBlind = false;
-    private boolean isColorBlind = false;
-    private boolean isPhysicallyDisabled = false;
-
-    //System's default "short" animation time.
-
-    public int shortAnimationDuration;
-
 
     private QiChatbot disability_chatBot;
     public QiChatVariable disability_type;
-
-    private static final String TAG = "Disability";
+    private Chat disability_chat;
+    public Future<Void> future_chat;
 
 
     //region Tablet Reachability variables
@@ -52,9 +43,6 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
     private Future<Void> enforceTabletReachabilityFuture;
     private Say actionEndedSay;*/
     //endregion
-
-    private Chat disability_chat;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +66,6 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
     public void onRobotFocusGained(QiContext qiContext) {
         this.qiContext = qiContext;
 
-        shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
         initChat();
 
         initUiElements();
@@ -95,32 +82,34 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 switch (currentValue) {
                     case "cieco":
                         //User is completely blind - Only voice from now on
-                        isBlind = true;
-                        Log.i(TAG, "isBlind: " + isBlind);
+                        ((GlobalVariables) this.getApplication()).setBlind(true);
+                        Log.i(TAG, "isBlind: " + ((GlobalVariables) this.getApplication()).getBlind());
                         break;
                     case "ipovedente":
                         //User not so blind - Voice and pinch in
-                        isAlmostBlind = true;
-                        Log.i(TAG, "isAlmostBlind: " + isAlmostBlind);
+                        ((GlobalVariables) this.getApplication()).setAlmostBlind(true);
+                        Log.i(TAG, "isAlmostBlind: " + ((GlobalVariables) this.getApplication()).getAlmostBlind());
                         break;
                     case "daltonico":
                         //Pay attention to color palette
-                        isColorBlind = true;
-                        Log.i(TAG, "isColorBlind: " + isColorBlind);
+                        ((GlobalVariables) this.getApplication()).setColorBlind(true);
+                        Log.i(TAG, "isColorBlind: " + ((GlobalVariables) this.getApplication()).getColorBlind());
                         break;
                     case "sordo":
                         //User is deaf - Avoid use voice
-                        isDeaf = true;
-                        Log.i(TAG, "isDeaf: " + isDeaf);
+                        ((GlobalVariables) this.getApplication()).setDeaf(true);
+                        Log.i(TAG, "isDeaf: " + ((GlobalVariables) this.getApplication()).getDeaf());
                         break;
                     case "menomato":
                         //User has a physical disability - Might be impaired in movement
-                        isPhysicallyDisabled = true;
-                        Log.i(TAG, "isPhysicallyDisabled: " + isPhysicallyDisabled);
+                        ((GlobalVariables) this.getApplication()).setPhysicallyDisabled(true);
+                        Log.i(TAG, "isPhysicallyDisabled: " +  ((GlobalVariables) this.getApplication()).getPhysicallyDisabled());
                         break;
                 }
             });
-            disability_chat.async().run();
+            future_chat = disability_chat.async().run();
+            //NEED TO ADD INSIDE THE TOPIC A COMMAND TO END THE CHAT AND MOVE TO THE NEXT ACTIVITY
+            //startActivity(new Intent(this, Indications.class));
         });
 
 
@@ -183,6 +172,11 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
             Say repeat = SayBuilder.with(qiContext).withText("Mi dispiace, non ho capito. Puoi ripetere?").build();
             repeat.async().run();
         });
+
+        disability_chatBot.addOnEndedListener(endReason -> {
+            Log.i(TAG, "qichatbot end reason = " + endReason);
+            future_chat.requestCancellation();
+        });
     }
 
     private void initUiElements() {
@@ -197,8 +191,13 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
         final Button button_colorBlind = findViewById(R.id.button_colorblind);
 
         button_mute.setOnClickListener(v -> {
-            isMute = true;
-            Log.i(TAG, "isMute: " + isMute);
+            ((GlobalVariables) this.getApplication()).setMute(true);
+            Log.i(TAG, "isMute: " + ((GlobalVariables) this.getApplication()).getMute());
+            future_chat.requestCancellation();
+            //THIS CRAHSES THE APP! FIX IT
+            Say memorized = SayBuilder.with(qiContext).withText("Ricevuto").build();
+            memorized.async().run();
+            startActivity(new Intent(this, Indications.class));
         });
 
         button_blind.setOnClickListener(v -> {
@@ -210,25 +209,37 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
             textView.setText("Puoi essere più specifico?");
             fadeInButton(button_almostBlind);
             button_almostBlind.setOnClickListener(w -> {
-                isAlmostBlind = true;
-                Log.i(TAG, "isAlmostBlind: " + isAlmostBlind);
+                ((GlobalVariables) this.getApplication()).setAlmostBlind(true);
+                Log.i(TAG, "isAlmostBlind: " + ((GlobalVariables) this.getApplication()).getAlmostBlind());
+                future_chat.requestCancellation();
+                startActivity(new Intent(this, Indications.class));
             });
             fadeInButton(button_colorBlind);
             button_colorBlind.setOnClickListener(w -> {
-                isColorBlind = true;
-                Log.i(TAG, "isColorBlind: " + isColorBlind);
+                ((GlobalVariables) this.getApplication()).setColorBlind(true);
+                Log.i(TAG, "isColorBlind: " + ((GlobalVariables) this.getApplication()).getColorBlind());
+                future_chat.requestCancellation();
+                Say memorized = SayBuilder.with(qiContext).withText("Ricevuto").build();
+                memorized.async().run();
+                startActivity(new Intent(this, Indications.class));
             });
-
         });
 
         button_deaf.setOnClickListener(v -> {
-            isDeaf = true;
-            Log.i(TAG, "isDeaf: " + isDeaf);
+            ((GlobalVariables) this.getApplication()).setDeaf(true);
+            Log.i(TAG, "isDeaf: " + ((GlobalVariables) this.getApplication()).getDeaf());
+            future_chat.requestCancellation();
+            textView.setText("Ricevuto!");
+            startActivity(new Intent(this, Indications.class));
         });
 
         button_other.setOnClickListener(v -> {
-            isPhysicallyDisabled = true;
-            Log.i(TAG, "isPhysicallyDisabled: " + isPhysicallyDisabled);
+            ((GlobalVariables) this.getApplication()).setPhysicallyDisabled(true);
+            Log.i(TAG, "isPhysicallyDisabled: " +  ((GlobalVariables) this.getApplication()).getPhysicallyDisabled());
+            future_chat.requestCancellation();
+            Say memorized = SayBuilder.with(qiContext).withText("Ricevuto").build();
+            memorized.async().run();
+            startActivity(new Intent(this, Indications.class));
         });
     }
 

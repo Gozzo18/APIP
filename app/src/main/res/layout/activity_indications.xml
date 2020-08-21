@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Indications">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/marketE"
+        android:layout_width="40dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="144dp"
+        android:layout_marginTop="308dp"
+        android:background="@drawable/round_button"
+        android:foreground="@drawable/ripple_effect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/marketA"
+        android:layout_width="38dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="156dp"
+        android:layout_marginEnd="196dp"
+        android:background="@drawable/round_button"
+        android:foreground="@drawable/ripple_effect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/marketB"
+        android:layout_width="38dp"
+        android:layout_height="23dp"
+        android:layout_marginEnd="214dp"
+        android:layout_marginBottom="226dp"
+        android:background="@drawable/round_button"
+        android:foreground="@drawable/ripple_effect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/marketC"
+        android:layout_width="38dp"
+        android:layout_height="23dp"
+        android:layout_marginEnd="98dp"
+        android:layout_marginBottom="85dp"
+        android:background="@drawable/round_button"
+        android:foreground="@drawable/ripple_effect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/marketD"
+        android:layout_width="38dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="145dp"
+        android:layout_marginBottom="94dp"
+        android:background="@drawable/round_button"
+        android:foreground="@drawable/ripple_effect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/marketF"
+        android:layout_width="38dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="197dp"
+        android:layout_marginEnd="432dp"
+        android:layout_marginBottom="176dp"
+        android:background="@drawable/round_button"
+        android:foreground="@drawable/ripple_effect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/marketE"
+        app:layout_constraintTop_toBottomOf="@+id/marketG"
+        app:layout_constraintVertical_bias="0.84000003" />
+
+    <Button
+        android:id="@+id/marketG"
+        android:layout_width="38dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="382dp"
+        android:layout_marginTop="156dp"
+        android:background="@drawable/round_button"
+        android:foreground="@drawable/ripple_effect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

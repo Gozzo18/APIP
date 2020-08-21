@@ -6,11 +6,11 @@ concept:(deafness) [sordo "non udente" audioleso]
 concept:(physical_disabilities) [mutilato "un braccio" "una mano" dita dito zoppo paralizzato]
 
 # Replying to speech
-u:(~generic_blindness) Puoi essere più specifico?
+u:(~generic_blindness) Puoi essere più specifico? ^stayInScope
     #Directly set the disability_type variable to predefined values
-    u1:( [cieco "non vedente"]) $disability_type=cieco Cercherò di parlare il più chiaramente possibile!
-    u1:( [ipovedente "vedo poco"]) $disability_type=ipovedente Attiverò la funzione di ingradimento sul mio tablet se necessario.
-    u1:( [daltonico daltonismo] ) $disability_type=daltonico Eviterò di usare colori che possano darti fastidio.
-u:(_~peculiar_blindness) $disability_type=$1 Nessun problema, sono in grado di adattarmi facilmente!
-u:(~deafness) $disability_type=sordo Ti mostrerò le informazioni sul mio tablet!
-u:(~physical_disabilities) $disability_type=menomato Eviterò di utilizzare il tablet.
+    u1:( [cieco "non vedente"]) $disability_type=cieco Cercherò di parlare il più chiaramente possibile! ^endDiscuss(Memorizzazione effettuate con successo)
+    u1:( [ipovedente "vedo poco"]) $disability_type=ipovedente Attiverò la funzione di ingradimento sul mio tablet se necessario. ^endDiscuss(Memorizzazione effettuate con successo)
+    u1:( [daltonico daltonismo] ) $disability_type=daltonico Eviterò di usare colori che possano darti fastidio. ^endDiscuss(Memorizzazione effettuate con successo)
+u:(_~peculiar_blindness) $disability_type=$1 Nessun problema, sono in grado di adattarmi facilmente! ^endDiscuss(Memorizzazione effettuate con successo)
+u:(~deafness) $disability_type=sordo Ti mostrerò le informazioni sul mio tablet! ^endDiscuss(Memorizzazione effettuate con successo)
+u:(~physical_disabilities) $disability_type=menomato Eviterò di utilizzare il tablet. ^endDiscuss(Memorizzazione effettuate con successo)
