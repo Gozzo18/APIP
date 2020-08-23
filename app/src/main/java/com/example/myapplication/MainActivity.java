@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,7 @@ import com.aldebaran.qi.sdk.object.conversation.Say;
 import com.aldebaran.qi.sdk.object.conversation.Topic;
 
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
 
@@ -54,6 +56,10 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
 
     public Future<ListenResult> listen_result_future;
 
+    //tts
+    private TextToSpeech TTS;
+    private Boolean tts_enabled;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -65,12 +71,35 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         setContentView(R.layout.activity_main);
         QiSDK.register(this, this);
 
+        //initialize tts variable
+        TTS= new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS){
+                    int result = TTS.setLanguage(Locale.ITALIAN);
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("TTS", "Language not supported");
+                    } else {
+                        tts_enabled = true;
+                    }
+                }else {
+                    Log.e("TTS","Initialization failed");
+                }
+            }
+        });
+        
     }
 
     @Override
     protected void onDestroy() {
         // Unregister the RobotLifecycleCallbacks for this Activity.
         QiSDK.unregister(this, this);
+
+        //stop TTS
+        if (TTS!= null) {
+            TTS.stop();
+            TTS.shutdown();;
+        }
         super.onDestroy();
     }
 
@@ -184,6 +213,8 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         greeting_animation.addOnStartedListener(()->{
             Say greet = SayBuilder.with(qiContext).withText("Ciao! Sono Pepper, hai bisogno di aiuto?").build();
             greet.async().run();
+            speak("Ciao! Sono Pepper, hai bisogno di aiuto?",(float) 1.0, (float) 1.0);
+
         });
 
         //Build the goodbye animation
@@ -221,5 +252,12 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
                 startActivity(new Intent(this, MainActivity.class));
             });
         });
+    }
+
+    private void speak(String text,float pitch, float speed) {
+        TTS.setPitch(pitch);
+        TTS.setSpeechRate(speed);
+
+        TTS.speak(text, TextToSpeech.QUEUE_FLUSH, null,null);
     }
 }

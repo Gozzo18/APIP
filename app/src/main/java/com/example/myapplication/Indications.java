@@ -1,10 +1,14 @@
 package com.example.myapplication;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.aldebaran.qi.sdk.QiContext;
 import com.aldebaran.qi.sdk.QiSDK;
@@ -66,9 +70,11 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
             builder.setMessage("Vuoi andare al negozio A?");
             builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO
-                    //Show arrows that goes from pepper to market A
 
+                    fadeInImage((findViewById((R.id.marketFBGA_direction1))));
+                    fadeInImage((findViewById((R.id.marketGA_direction1))));
+                    fadeInImage((findViewById((R.id.marketGA_direction2))));
+                    fadeInImage((findViewById((R.id.marketA_direction1))));
                     //Close the alert box
                     dialog.dismiss();
                 }
@@ -93,9 +99,8 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
             builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO
-                    //Show arrows that goes from pepper to market B
-
+                    fadeInImage((findViewById((R.id.marketFBGA_direction1))));
+                    fadeInImage((findViewById((R.id.marketB_direction1))));
                     //Close the alert box
                     dialog.dismiss();
                 }
@@ -119,9 +124,10 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
             builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO
-                    //Show arrows that goes from pepper to market C
-
+                    fadeInImage((findViewById((R.id.marketC_direction1))));
+                    fadeInImage((findViewById((R.id.marketC_direction2))));
+                    fadeInImage((findViewById((R.id.marketC_direction3))));
+                    fadeInImage((findViewById((R.id.marketC_direction4))));
                     //Close the alert box
                     dialog.dismiss();
                 }
@@ -145,8 +151,12 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
             builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO
-                    //Show arrows that goes from pepper to market D
+                    fadeInImage((findViewById((R.id.marketD_direction1))));
+                    fadeInImage((findViewById((R.id.marketDE_direction1))));
+                    fadeInImage((findViewById((R.id.marketDE_direction2))));
+                    fadeInImage((findViewById((R.id.marketDE_direction3))));
+                    fadeInImage((findViewById((R.id.marketDE_direction4))));
+
 
                     //Close the alert box
                     dialog.dismiss();
@@ -172,8 +182,11 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
             builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO
-                    //Show arrows that goes from pepper to market E
+                    fadeInImage((findViewById((R.id.marketDE_direction1))));
+                    fadeInImage((findViewById((R.id.marketDE_direction2))));
+                    fadeInImage((findViewById((R.id.marketDE_direction3))));
+                    fadeInImage((findViewById((R.id.marketDE_direction4))));
+                    fadeInImage((findViewById((R.id.marketE_direction1))));
 
                     //Close the alert box
                     dialog.dismiss();
@@ -198,8 +211,10 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
             builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO
-                    //Show arrows that goes from pepper to market F
+
+                    fadeInImage((findViewById((R.id.marketFBGA_direction1))));
+                    fadeInImage((findViewById((R.id.marketF_direction1))));
+
 
                     //Close the alert box
                     dialog.dismiss();
@@ -224,8 +239,12 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
             builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO
-                    //Show arrows that goes from pepper to market G
+                    fadeInImage((findViewById((R.id.marketFBGA_direction1))));
+                    fadeInImage((findViewById((R.id.marketGA_direction2))));
+                    fadeInImage((findViewById((R.id.marketGA_direction1))));
+                    fadeInImage((findViewById((R.id.marketG_direction1))));
+
+
 
                     //Close the alert box
                     dialog.dismiss();
@@ -244,5 +263,18 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
         });
 
 
+
+    }
+    private void fadeInImage (ImageView im) {
+        im.animate()
+                .alpha(1f) //image becomes transparent
+                .setDuration(200) //Set the length of the animation
+                .setListener(new AnimatorListenerAdapter() {
+                    //When the animation ends, make the button disappear
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        im.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 }
