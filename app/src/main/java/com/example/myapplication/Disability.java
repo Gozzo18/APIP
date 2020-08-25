@@ -68,12 +68,11 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
 
         initChat();
 
-        initUiElements();
-
         //Pepper asks if the user has any disabilities
         Future<Say> askDisability = SayBuilder.with(qiContext).withText("Prima dimmi se soffri di qualche disabilità. Mi adatterò al meglio delle mie possibilità!").buildAsync();
         askDisability.andThenConsume(say -> {
             say.run();
+            initUiElements();
             //Start chatting with the user
             disability_type = disability_chatBot.variable("disability_type");
             //Catch the type of disability
@@ -108,8 +107,6 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 }
             });
             future_chat = disability_chat.async().run();
-            //NEED TO ADD INSIDE THE TOPIC A COMMAND TO END THE CHAT AND MOVE TO THE NEXT ACTIVITY
-            //startActivity(new Intent(this, Indications.class));
         });
 
 
@@ -176,6 +173,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
         disability_chatBot.addOnEndedListener(endReason -> {
             Log.i(TAG, "qichatbot end reason = " + endReason);
             future_chat.requestCancellation();
+            startActivity(new Intent(this, Indications.class));
         });
     }
 
@@ -194,10 +192,11 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
             ((GlobalVariables) this.getApplication()).setMute(true);
             Log.i(TAG, "isMute: " + ((GlobalVariables) this.getApplication()).getMute());
             future_chat.requestCancellation();
-            //THIS CRAHSES THE APP! FIX IT
-            Say memorized = SayBuilder.with(qiContext).withText("Ricevuto").build();
-            memorized.async().run();
-            startActivity(new Intent(this, Indications.class));
+            Future<Say> memorized = SayBuilder.with(qiContext).withText("Ricevuto").buildAsync();
+            memorized.andThenConsume(gotIt->{
+                gotIt.async().run();
+                startActivity(new Intent(this, Information.class));
+            });
         });
 
         button_blind.setOnClickListener(v -> {
@@ -212,34 +211,42 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 ((GlobalVariables) this.getApplication()).setAlmostBlind(true);
                 Log.i(TAG, "isAlmostBlind: " + ((GlobalVariables) this.getApplication()).getAlmostBlind());
                 future_chat.requestCancellation();
-                startActivity(new Intent(this, Indications.class));
+                Future<Say> memorized = SayBuilder.with(qiContext).withText("Ricevuto").buildAsync();
+                memorized.andThenConsume(gotIt->{
+                    gotIt.async().run();
+                    startActivity(new Intent(this, Information.class));
+                });
             });
             fadeInButton(button_colorBlind);
             button_colorBlind.setOnClickListener(w -> {
                 ((GlobalVariables) this.getApplication()).setColorBlind(true);
                 Log.i(TAG, "isColorBlind: " + ((GlobalVariables) this.getApplication()).getColorBlind());
                 future_chat.requestCancellation();
-                Say memorized = SayBuilder.with(qiContext).withText("Ricevuto").build();
-                memorized.async().run();
-                startActivity(new Intent(this, Indications.class));
+                Future<Say> memorized = SayBuilder.with(qiContext).withText("Ricevuto").buildAsync();
+                memorized.andThenConsume(gotIt->{
+                    gotIt.async().run();
+                    startActivity(new Intent(this, Information.class));
+                });
             });
         });
 
         button_deaf.setOnClickListener(v -> {
+            future_chat.requestCancellation();
             ((GlobalVariables) this.getApplication()).setDeaf(true);
             Log.i(TAG, "isDeaf: " + ((GlobalVariables) this.getApplication()).getDeaf());
-            future_chat.requestCancellation();
             textView.setText("Ricevuto!");
-            startActivity(new Intent(this, Indications.class));
+            startActivity(new Intent(this, Information.class));
         });
 
         button_other.setOnClickListener(v -> {
+            future_chat.requestCancellation();
             ((GlobalVariables) this.getApplication()).setPhysicallyDisabled(true);
             Log.i(TAG, "isPhysicallyDisabled: " +  ((GlobalVariables) this.getApplication()).getPhysicallyDisabled());
-            future_chat.requestCancellation();
-            Say memorized = SayBuilder.with(qiContext).withText("Ricevuto").build();
-            memorized.async().run();
-            startActivity(new Intent(this, Indications.class));
+            Future<Say> memorized = SayBuilder.with(qiContext).withText("Ricevuto").buildAsync();
+            memorized.andThenConsume(gotIt->{
+                gotIt.async().run();
+                startActivity(new Intent(this, Information.class));
+            });
         });
     }
 

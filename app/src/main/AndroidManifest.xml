@@ -12,7 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Indications"></activity>
+        <activity
+            android:name=".Indications"
+            android:parentActivityName=".Information">
+        </activity>
+        <activity
+            android:name=".Information"
+            android:parentActivityName=".Disability">
+        </activity>
         <activity
             android:name=".Disability"
             android:parentActivityName=".MainActivity" />

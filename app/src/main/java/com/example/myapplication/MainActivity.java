@@ -113,13 +113,13 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         //Initialize animations
         initAnimations();
 
-        //Initialize UI elements
-        initUiElements();
-
         //Pepper greets the approached user
         animation_future = greeting_animation.async().run();
         //After the animation is finished, wait for human input
         animation_future.andThenConsume(chatting ->{
+
+            //Initialize UI elements
+            initUiElements();
             //Create set of words to look for in user's answer
             PhraseSet response = PhraseSetBuilder.with(qiContext).withTexts("Si", "No").build();
             //Build asynchronously the Listen action
@@ -213,7 +213,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         greeting_animation.addOnStartedListener(()->{
             Say greet = SayBuilder.with(qiContext).withText("Ciao! Sono Pepper, hai bisogno di aiuto?").build();
             greet.async().run();
-            speak("Ciao! Sono Pepper, hai bisogno di aiuto?",(float) 1.0, (float) 1.0);
+            //speak("Ciao! Sono Pepper, hai bisogno di aiuto?",(float) 1.0, (float) 1.0);
 
         });
 

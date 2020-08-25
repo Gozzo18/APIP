@@ -1,0 +1,16 @@
+topic: ~small_talk()
+
+# Defining extra concepts out of words or group of words
+concept:(time) [ora ore data giorno]
+concept:(weather) [tempo temperatura]
+concept:(humor) [barzelletta scherzo "fammi ridere"]
+concept:(directions) [direzioni "come arrivo" "dove si trova" "quanto è lontano"]
+
+# Replying to speech
+u:(~time) ^currentDateTime
+u:(~humor) ^rand["Perché la bambina è caduta dall'altalena? Perché non aveva le braccia!"
+                 "Come fa una mucca senza labbra? Uuuuuuuuuuuuuuu."
+                 "Come fa una pecora ubriaca? Beeeeeeeeeeeecks."
+                 "La mamma accusa Pierino di aver fatto cadere il vaso. Pierino dice che non era colpa sua, invece lo era."]
+u:(~weather) ^rand["É nuvoloso" "C'è il sole" "Sta piovendo" "Sta per piovere"]
+u:(~directions) ["Dove vorresti andare?"] ^endDiscuss(Passa a nuova activity)

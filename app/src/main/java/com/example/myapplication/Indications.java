@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -62,6 +63,13 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
         final Button marketE = findViewById(R.id.marketE);
         final Button marketF = findViewById(R.id.marketF);
         final Button marketG = findViewById(R.id.marketG);
+        final Button terminate = findViewById(R.id.terminate);
+
+        terminate.setOnClickListener(v->{
+            Log.i(TAG, "Map indication finished");
+            //Restart to the previous activity
+            startActivity(new Intent(this, Information.class));
+        });
 
         marketA.setOnClickListener(v->{
             Log.i(TAG, "Market A selected");
