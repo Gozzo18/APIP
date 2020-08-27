@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -60,6 +61,8 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     private TextToSpeech TTS;
     private Boolean tts_enabled;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -87,6 +90,8 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
                 }
             }
         });
+
+
         
     }
 
@@ -100,6 +105,8 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
             TTS.stop();
             TTS.shutdown();;
         }
+
+
         super.onDestroy();
     }
 
@@ -207,7 +214,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     private void initAnimations() {
 
         //Build greeting animation
-        Animation greetingAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.greet).build();
+        Animation greetingAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.hello_a010).build();
         greeting_animation = AnimateBuilder.with(qiContext).withAnimation(greetingAnimationObject).build();
         //As soon as the animation starts, Pepper greets vocally the user
         greeting_animation.addOnStartedListener(()->{

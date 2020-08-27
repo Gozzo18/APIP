@@ -16,6 +16,8 @@ import com.aldebaran.qi.Future;
 import com.aldebaran.qi.sdk.QiContext;
 import com.aldebaran.qi.sdk.QiSDK;
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks;
+import com.aldebaran.qi.sdk.builder.AnimateBuilder;
+import com.aldebaran.qi.sdk.builder.AnimationBuilder;
 import com.aldebaran.qi.sdk.builder.ChatBuilder;
 import com.aldebaran.qi.sdk.builder.QiChatbotBuilder;
 import com.aldebaran.qi.sdk.builder.SayBuilder;
@@ -23,6 +25,8 @@ import com.aldebaran.qi.sdk.builder.TopicBuilder;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy;
+import com.aldebaran.qi.sdk.object.actuation.Animate;
+import com.aldebaran.qi.sdk.object.actuation.Animation;
 import com.aldebaran.qi.sdk.object.conversation.Chat;
 import com.aldebaran.qi.sdk.object.conversation.QiChatVariable;
 import com.aldebaran.qi.sdk.object.conversation.QiChatbot;
@@ -46,6 +50,8 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     public QiChatVariable information_type;
     private Chat information_chat;
     public Future<Void> future_chat;
+
+    private Animate animation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +78,12 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
 
         initChat();
 
+        Animation greetingAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a004).build();
+        animation = AnimateBuilder.with(qiContext).withAnimation(greetingAnimationObject).build();
+
         Future<Say> askInformation = SayBuilder.with(qiContext).withText("Come posso aiutarti?").buildAsync();
         askInformation.andThenConsume(say->{
-            say.run();
+            Future.waitAll(say.async().run(),animation.async().run());
             initUiElements();
             future_chat = information_chat.async().run();
         });
@@ -112,10 +121,14 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
 
         indicationButton.setOnClickListener(v->{
             future_chat.requestCancellation();
+
+
             Future<Say> prepareNextActivity = SayBuilder.with(qiContext).withText("Dove vuoi andare?").buildAsync();
             prepareNextActivity.andThenConsume(say->{
-                say.async().run();
-                Thread.sleep(500);
+                Animation greetingAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a004).build();
+                animation = AnimateBuilder.with(qiContext).withAnimation(greetingAnimationObject).build();
+                Future.waitAll(say.async().run(),animation.async().run());
+                Thread.sleep(1500);
                 startActivity(new Intent(this, Indications.class));
             });
         });

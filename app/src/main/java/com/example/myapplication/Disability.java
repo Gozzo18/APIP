@@ -13,6 +13,8 @@ import com.aldebaran.qi.Future;
 import com.aldebaran.qi.sdk.QiContext;
 import com.aldebaran.qi.sdk.QiSDK;
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks;
+import com.aldebaran.qi.sdk.builder.AnimateBuilder;
+import com.aldebaran.qi.sdk.builder.AnimationBuilder;
 import com.aldebaran.qi.sdk.builder.ChatBuilder;
 import com.aldebaran.qi.sdk.builder.QiChatbotBuilder;
 import com.aldebaran.qi.sdk.builder.SayBuilder;
@@ -20,6 +22,8 @@ import com.aldebaran.qi.sdk.builder.TopicBuilder;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy;
+import com.aldebaran.qi.sdk.object.actuation.Animate;
+import com.aldebaran.qi.sdk.object.actuation.Animation;
 import com.aldebaran.qi.sdk.object.conversation.Chat;
 import com.aldebaran.qi.sdk.object.conversation.QiChatVariable;
 import com.aldebaran.qi.sdk.object.conversation.QiChatbot;
@@ -36,6 +40,8 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
     private Chat disability_chat;
     public Future<Void> future_chat;
 
+
+    private Animate animation;
 
     //region Tablet Reachability variables
     /*private Button tabletReachabilitybutton;
@@ -68,10 +74,16 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
 
         initChat();
 
+
         //Pepper asks if the user has any disabilities
         Future<Say> askDisability = SayBuilder.with(qiContext).withText("Prima dimmi se soffri di qualche disabilità. Mi adatterò al meglio delle mie possibilità!").buildAsync();
+        Animation greetingAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a007).build();
+        animation = AnimateBuilder.with(qiContext).withAnimation(greetingAnimationObject).build();
+
+
         askDisability.andThenConsume(say -> {
-            say.run();
+            Future.waitAll(say.async().run(),animation.async().run());
+
             initUiElements();
             //Start chatting with the user
             disability_type = disability_chatBot.variable("disability_type");
