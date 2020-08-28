@@ -108,6 +108,12 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         final TextView textView = (TextView)findViewById(R.id.textView3);
         final ImageView weatherImage = (ImageView)findViewById(R.id.weather_image);
 
+        Animation humorAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a002).build();
+        Animate humor_animation = AnimateBuilder.with(qiContext).withAnimation(humorAnimationObject).build();
+
+        Animation timeAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.check_time_right_b001).build();
+        Future<Animate> time_animation = AnimateBuilder.with(qiContext).withAnimation(timeAnimationObject).buildAsync();
+
         final String[] jokes = {"Perché la bambina è caduta dall'altalena? Perché non aveva le braccia!",
                                 "Come fa una mucca senza labbra? Uuuuuuuuuuuuuuu.",
                                 "Come fa una pecora ubriaca? Beeeeeeeeeeeecks."};
@@ -115,8 +121,24 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         final String[] weather = {"É nuvoloso", "C'è il sole", "Poco nuvoloso", "Sta piovendo"};
 
         timeButton.setOnClickListener(v->{
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
-            textView.setText(sdf.format(new Date()));
+
+
+            time_animation.andThenConsume(animate -> {
+                animate.async().run();
+                Thread.sleep(2000);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+                Say time_say =SayBuilder.with(qiContext).withText("Ora sono le "+ sdf.format(new Date()).split(" ")[1]).build() ;
+                time_say.async().run();
+                textView.setText(sdf.format(new Date()));
+
+
+            });
+
+            //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+            //textView.setText(sdf.format(new Date()));
+            //Say time_say =SayBuilder.with(qiContext).withText("Ora sono le "+ sdf.format(new Date()).split(" ")[1]).build() ;
+            //time_say.async().run();
+
         });
 
         indicationButton.setOnClickListener(v->{
@@ -125,8 +147,8 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
 
             Future<Say> prepareNextActivity = SayBuilder.with(qiContext).withText("Dove vuoi andare?").buildAsync();
             prepareNextActivity.andThenConsume(say->{
-                Animation greetingAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a004).build();
-                animation = AnimateBuilder.with(qiContext).withAnimation(greetingAnimationObject).build();
+                Animation AnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a004).build();
+                animation = AnimateBuilder.with(qiContext).withAnimation(AnimationObject).build();
                 Future.waitAll(say.async().run(),animation.async().run());
                 Thread.sleep(1500);
                 startActivity(new Intent(this, Indications.class));
@@ -134,6 +156,9 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         });
 
         humorButton.setOnClickListener(v->{
+
+            humor_animation.async().run();
+
             int rnd = new Random().nextInt(jokes.length);
             textView.setText(jokes[rnd]);
             textView.setTextSize(40);

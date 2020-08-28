@@ -47,6 +47,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     private Animate greeting_animation;
     private Animate goodbye_animation;
     public Future<Void> animation_future;
+    private Animate animation;
     //endregion
 
     //region Chatbot variables
@@ -103,7 +104,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         //stop TTS
         if (TTS!= null) {
             TTS.stop();
-            TTS.shutdown();;
+            TTS.shutdown();
         }
 
 
@@ -206,8 +207,11 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
 
         //Whenever the robot can not hear correctly, ask for repetition - Might not be required since voice inputs are not available
         helpNeeded_chat.addOnNoPhraseRecognizedListener(() -> {
+            Animation AnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.confused_a001).build();
+            animation = AnimateBuilder.with(qiContext).withAnimation(AnimationObject).build();
             Say repeat = SayBuilder.with(qiContext).withText("Mi dispiace, non ho capito. Puoi ripetere?").build();
-            repeat.async().run();
+            Future.waitAll(repeat.async().run(),animation.async().run());
+
         });
     }
 
