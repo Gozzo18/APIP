@@ -41,14 +41,8 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
     public Future<Void> future_chat;
 
 
-    private Animate animation;
-
-    //region Tablet Reachability variables
-    /*private Button tabletReachabilitybutton;
-    private EnforceTabletReachability enforceTabletReachability;
-    private Future<Void> enforceTabletReachabilityFuture;
-    private Say actionEndedSay;*/
-    //endregion
+    private Animate affirmationAnimation;
+    private Future<Void> affirmationAnimationF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,18 +68,12 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
 
         initChat();
 
+        initAnimation();
 
-        //Pepper asks if the user has any disabilities
-        Future<Say> askDisability = SayBuilder.with(qiContext).withText("Prima dimmi se soffri di qualche disabilità. Mi adatterò al meglio delle mie possibilità!").buildAsync();
-        Animation greetingAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a007).build();
-        animation = AnimateBuilder.with(qiContext).withAnimation(greetingAnimationObject).build();
-
-
-        askDisability.andThenConsume(say -> {
-            Future.waitAll(say.async().run(),animation.async().run());
-
+        affirmationAnimationF = affirmationAnimation.async().run();
+        affirmationAnimationF.andThenConsume(ask->{
             initUiElements();
-            //Start chatting with the user
+            //Catch the disability type
             disability_type = disability_chatBot.variable("disability_type");
             //Catch the type of disability
             disability_type.addOnValueChangedListener(currentValue -> {
@@ -118,10 +106,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                         break;
                 }
             });
-            future_chat = disability_chat.async().run();
         });
-
-
     }
 
     @Override
@@ -134,40 +119,27 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
         if (disability_type != null) {
             disability_type.removeAllOnValueChangedListeners();
         }
-
+        if(affirmationAnimation != null){
+            affirmationAnimation.removeAllOnStartedListeners();
+        }
     }
 
     @Override
     public void onRobotFocusRefused(String reason) {
-
     }
 
-    /*private void initUiElements() {
-        tabletReachabilitybutton = (Button)findViewById(R.id.tablet_reachability_button);
-        tabletReachabilitybutton.setOnClickListener(v -> {
-            if (enforceTabletReachabilityFuture == null || enforceTabletReachabilityFuture.isDone()) {
-                // The EnforceTabletReachability action is not running
-                startEnforceTabletReachability();
-            } else {
-                // The EnforceTabletReachability is running
-                enforceTabletReachabilityFuture.requestCancellation();
-            }
+    private void initAnimation(){
+
+        Animation affirmationAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a007).build();
+        affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(affirmationAnimationObject).build();
+        affirmationAnimation.addOnStartedListener(()->{
+            //Pepper asks if the user has any disabilities
+            Say askDisability = SayBuilder.with(qiContext).withText("Prima dimmi se soffri di qualche disabilità. Mi adatterò al meglio delle mie possibilità!").build();
+            askDisability.run();
+            //Then starts chatting with it
+            future_chat = disability_chat.async().run();
         });
     }
-
-    private void startEnforceTabletReachability(){
-        enforceTabletReachabilityFuture = enforceTabletReachability.async().run();
-
-        enforceTabletReachabilityFuture.thenConsume(future->{
-            actionEndedSay.run();
-        });
-    }
-
-    private void initActions() {
-        enforceTabletReachability = EnforceTabletReachabilityBuilder.with(qiContext).build();
-        String actionEndedText ="My movements are back to normal. Run the action again to see the difference." ;
-        actionEndedSay = SayBuilder.with(qiContext).withText(actionEndedText).build();
-    }*/
 
     private void initChat() {
 

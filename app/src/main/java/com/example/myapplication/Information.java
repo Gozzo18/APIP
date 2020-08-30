@@ -3,7 +3,6 @@ package com.example.myapplication;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -34,7 +33,6 @@ import com.aldebaran.qi.sdk.object.conversation.Say;
 import com.aldebaran.qi.sdk.object.conversation.Topic;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -43,15 +41,14 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
 
     private static final String TAG = "Information";
     private QiContext qiContext;
-
-    Handler myHandler;
-
     private QiChatbot information_chatBot;
     public QiChatVariable information_type;
     private Chat information_chat;
     public Future<Void> future_chat;
 
-    private Animate animation;
+    private Animate affirmationAnimation;
+    private Future<Animate> humor_animation;
+    private Future<Animate> time_animation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,15 +75,9 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
 
         initChat();
 
-        Animation greetingAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a004).build();
-        animation = AnimateBuilder.with(qiContext).withAnimation(greetingAnimationObject).build();
+        initAnimations();
 
-        Future<Say> askInformation = SayBuilder.with(qiContext).withText("Come posso aiutarti?").buildAsync();
-        askInformation.andThenConsume(say->{
-            Future.waitAll(say.async().run(),animation.async().run());
-            initUiElements();
-            future_chat = information_chat.async().run();
-        });
+        affirmationAnimation.run();
     }
 
     @Override
@@ -97,7 +88,6 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
 
     @Override
     public void onRobotFocusRefused(String reason) {
-
     }
 
     private void initUiElements(){
@@ -108,12 +98,6 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         final TextView textView = (TextView)findViewById(R.id.textView3);
         final ImageView weatherImage = (ImageView)findViewById(R.id.weather_image);
 
-        Animation humorAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a002).build();
-        Animate humor_animation = AnimateBuilder.with(qiContext).withAnimation(humorAnimationObject).build();
-
-        Animation timeAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.check_time_right_b001).build();
-        Future<Animate> time_animation = AnimateBuilder.with(qiContext).withAnimation(timeAnimationObject).buildAsync();
-
         final String[] jokes = {"Perché la bambina è caduta dall'altalena? Perché non aveva le braccia!",
                                 "Come fa una mucca senza labbra? Uuuuuuuuuuuuuuu.",
                                 "Come fa una pecora ubriaca? Beeeeeeeeeeeecks."};
@@ -121,47 +105,32 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         final String[] weather = {"É nuvoloso", "C'è il sole", "Poco nuvoloso", "Sta piovendo"};
 
         timeButton.setOnClickListener(v->{
-
-
-            time_animation.andThenConsume(animate -> {
-                animate.async().run();
-                Thread.sleep(2000);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
-                Say time_say =SayBuilder.with(qiContext).withText("Ora sono le "+ sdf.format(new Date()).split(" ")[1]).build() ;
-                time_say.async().run();
-                textView.setText(sdf.format(new Date()));
-
-
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+            textView.setText(sdf.format(new Date()));
+            time_animation.andThenConsume(animation->{
+                animation.async().run();
             });
-
-            //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
-            //textView.setText(sdf.format(new Date()));
-            //Say time_say =SayBuilder.with(qiContext).withText("Ora sono le "+ sdf.format(new Date()).split(" ")[1]).build() ;
-            //time_say.async().run();
 
         });
 
         indicationButton.setOnClickListener(v->{
             future_chat.requestCancellation();
-
-
             Future<Say> prepareNextActivity = SayBuilder.with(qiContext).withText("Dove vuoi andare?").buildAsync();
             prepareNextActivity.andThenConsume(say->{
                 Animation AnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a004).build();
-                animation = AnimateBuilder.with(qiContext).withAnimation(AnimationObject).build();
-                Future.waitAll(say.async().run(),animation.async().run());
+                affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(AnimationObject).build();
+                Future.waitAll(say.async().run(), affirmationAnimation.async().run());
                 Thread.sleep(1500);
                 startActivity(new Intent(this, Indications.class));
             });
         });
 
         humorButton.setOnClickListener(v->{
-
-            humor_animation.async().run();
-
             int rnd = new Random().nextInt(jokes.length);
             textView.setText(jokes[rnd]);
-            textView.setTextSize(40);
+            humor_animation.andThenConsume(animation->{
+                animation.async().run();
+            });
         });
 
         weatherButton.setOnClickListener(v->{
@@ -224,6 +193,26 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
             future_chat.requestCancellation();
             startActivity(new Intent(this, Indications.class));
         });
+    }
+
+    private void initAnimations(){
+
+        Animation affirmationAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a004).build();
+        affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(affirmationAnimationObject).build();
+        affirmationAnimation.addOnStartedListener(()->{
+            Future<Say> askInformation = SayBuilder.with(qiContext).withText("Come posso aiutarti?").buildAsync();
+            askInformation.andThenConsume(say->{
+                initUiElements();
+                future_chat = information_chat.async().run();
+            });
+        });
+
+        Animation humorAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a002).build();
+        humor_animation = AnimateBuilder.with(qiContext).withAnimation(humorAnimationObject).buildAsync();
+
+        Animation timeAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.check_time_right_b001).build();
+        time_animation = AnimateBuilder.with(qiContext).withAnimation(timeAnimationObject).buildAsync();
+
     }
 
     //region Animation methods
