@@ -16,17 +16,22 @@ import com.aldebaran.qi.sdk.QiContext;
 import com.aldebaran.qi.sdk.QiSDK;
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
+import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy;
 
 public class Indications  extends RobotActivity implements RobotLifecycleCallbacks {
 
     private static final String TAG = "Disability";
+    private GlobalVariables globalVariables;
+
     private QiContext qiContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        globalVariables = (GlobalVariables) getIntent().getSerializableExtra("globalVariables");
         setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.OVERLAY);
+        setSpeechBarDisplayPosition(SpeechBarDisplayPosition.TOP);
         setContentView(R.layout.activity_indications);
         QiSDK.register(this, this);
     }
@@ -71,7 +76,9 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
         terminate.setOnClickListener( v-> {
             Log.i(TAG, "Map indication finished");
             //Restart to the previous activity
-            startActivity(new Intent(this, Information.class));
+            Intent changeActivity = new Intent(this, Information.class);
+            changeActivity.putExtra("globalVariables", globalVariables);
+            startActivity(changeActivity);
         });
 
         marketA.setOnClickListener(v -> {

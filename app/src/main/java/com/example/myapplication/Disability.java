@@ -21,6 +21,7 @@ import com.aldebaran.qi.sdk.builder.SayBuilder;
 import com.aldebaran.qi.sdk.builder.TopicBuilder;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition;
+import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy;
 import com.aldebaran.qi.sdk.object.actuation.Animate;
 import com.aldebaran.qi.sdk.object.actuation.Animation;
 import com.aldebaran.qi.sdk.object.conversation.Chat;
@@ -31,10 +32,9 @@ import com.aldebaran.qi.sdk.object.conversation.Topic;
 
 public class Disability extends RobotActivity implements RobotLifecycleCallbacks {
 
-    private QiContext qiContext;
     private static final String TAG = "Disability";
+    private QiContext qiContext;
 
-    // Global variables
     private GlobalVariables globalVariables;
 
     private QiChatbot disability_chatBot;
@@ -42,29 +42,26 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
     private Chat disability_chat;
     public Future<Void> future_chat;
 
+
     private Animate affirmationAnimation;
     private Future<Void> affirmationAnimationF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         globalVariables = (GlobalVariables) getIntent().getSerializableExtra("globalVariables");
-
+        //Set type and position of speechbar https://android.aldebaran.com/sdk/doc/pepper-sdk/ch4_api/conversation/conversation_feedbacks.html
+        setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.OVERLAY);
         setSpeechBarDisplayPosition(SpeechBarDisplayPosition.TOP);
-
         //Set the current layout view to activity_main.xml
         setContentView(R.layout.activity_disability);
-
-        // Register the RobotLifecycleCallbacks for this activity
         QiSDK.register(this, this);
     }
 
     @Override
     protected void onDestroy() {
-        // Unregister the RobotLifecycleCallbacks for this activity
+        // Unregister the RobotLifecycleCallbacks for this Activity.
         QiSDK.unregister(this, this);
-
         super.onDestroy();
     }
 
@@ -76,11 +73,9 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
 
         initAnimation();
 
-        // Initialize UI elements
-        initUiElements();
-
         affirmationAnimationF = affirmationAnimation.async().run();
-        affirmationAnimationF.andThenConsume(ask -> {
+        affirmationAnimationF.andThenConsume(ask->{
+            initUiElements();
             //Catch the disability type
             disability_type = disability_chatBot.variable("disability_type");
             //Catch the type of disability
@@ -111,24 +106,30 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
 
     @Override
     public void onRobotFocusLost() {
-        disability_chat.removeAllOnStartedListeners();
-        disability_type.removeAllOnValueChangedListeners();
-        affirmationAnimation.removeAllOnStartedListeners();
+
+        if (disability_chat != null) {
+            disability_chat.removeAllOnStartedListeners();
+        }
+
+        if (disability_type != null) {
+            disability_type.removeAllOnValueChangedListeners();
+        }
+        if(affirmationAnimation != null){
+            affirmationAnimation.removeAllOnStartedListeners();
+        }
     }
 
     @Override
     public void onRobotFocusRefused(String reason) {
-        // The robot focus is refused
     }
 
-
-
     private void initAnimation(){
+
         Animation affirmationAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a007).build();
         affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(affirmationAnimationObject).build();
-        affirmationAnimation.addOnStartedListener(() -> {
+        affirmationAnimation.addOnStartedListener(()->{
             //Pepper asks if the user has any disabilities
-            Say askDisability = SayBuilder.with(qiContext).withText("Do you have any disabilities? I will adapt to the best of my ability!").build();
+            Say askDisability = SayBuilder.with(qiContext).withText("Do you have any form of disability? I might adapt accordingly to it.").build();
             askDisability.run();
             //Then starts chatting with it
             future_chat = disability_chat.async().run();
@@ -136,6 +137,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
     }
 
     private void initChat() {
+
         Topic disability_topic = TopicBuilder.with(qiContext).withResource(R.raw.disability).build();
 
         disability_chatBot = QiChatbotBuilder.with(qiContext).withTopic(disability_topic).build();
@@ -152,6 +154,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
     }
 
     private void initUiElements() {
+
         final TextView textView = (TextView) findViewById(R.id.textView2);
         final Button button_mute = findViewById(R.id.button_mute);
         final Button button_blind = findViewById(R.id.button_blind);
@@ -165,9 +168,9 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
             if (future_chat != null) {
                 future_chat.requestCancellation();
             }
-            Future<Say> memorized = SayBuilder.with(qiContext).withText("Ok").buildAsync();
-            memorized.andThenConsume(gotIt -> {
-                // gotIt.async().run();
+            Future<Say> memorized = SayBuilder.with(qiContext).withText("Got it! Then focus pay attention to my movements and the tablet.").buildAsync();
+            memorized.andThenConsume(gotIt->{
+                gotIt.async().run();
                 Intent changeActivity = new Intent(this, Information.class);
                 changeActivity.putExtra("globalVariables", globalVariables);
                 startActivity(changeActivity);
@@ -175,7 +178,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
         });
 
         button_blind.setOnClickListener(v -> {
-            // Need to be more precise about the visual disability
+            //Need to be more precise
             fadeOutButton(button_mute);
             fadeOutButton(button_blind);
             fadeOutButton(button_deaf);
@@ -188,24 +191,24 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 if (future_chat != null) {
                     future_chat.requestCancellation();
                 }
-                Future<Say> memorized = SayBuilder.with(qiContext).withText("Ok").buildAsync();
-                memorized.andThenConsume(gotIt -> {
-                    // gotIt.async().run();
+                Future<Say> memorized = SayBuilder.with(qiContext).withText("Ricevuto").buildAsync();
+                memorized.andThenConsume(gotIt->{
+                    gotIt.async().run();
                     Intent changeActivity = new Intent(this, Information.class);
                     changeActivity.putExtra("globalVariables", globalVariables);
                     startActivity(changeActivity);
                 });
             });
-
             fadeInButton(button_color_blind);
             button_color_blind.setOnClickListener(w -> {
                 globalVariables.setColorBlind(true);
                 if (future_chat != null) {
                     future_chat.requestCancellation();
                 }
-                Future<Say> memorized = SayBuilder.with(qiContext).withText("Ok").buildAsync();
-                memorized.andThenConsume(gotIt -> {
-                    // gotIt.async().run();
+                future_chat.requestCancellation();
+                Future<Say> memorized = SayBuilder.with(qiContext).withText("Ricevuto").buildAsync();
+                memorized.andThenConsume(gotIt->{
+                    gotIt.async().run();
                     Intent changeActivity = new Intent(this, Information.class);
                     changeActivity.putExtra("globalVariables", globalVariables);
                     startActivity(changeActivity);
@@ -218,6 +221,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 future_chat.requestCancellation();
             }
             globalVariables.setDeaf(true);
+            textView.setText("Ricevuto!");
             Intent changeActivity = new Intent(this, Information.class);
             changeActivity.putExtra("globalVariables", globalVariables);
             startActivity(changeActivity);
@@ -237,6 +241,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
         });
     }
 
+    //region Animation methods
     private void fadeOutButton(Button b) {
         b.animate()
                 .alpha(0f) //Button becomes transparent
@@ -262,5 +267,5 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                     }
                 });
     }
-
+    //endregion
 }

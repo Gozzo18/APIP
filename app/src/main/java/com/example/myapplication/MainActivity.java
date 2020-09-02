@@ -100,6 +100,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
                     startActivity(changeActivity);
                 } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_no) ||
                            PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_bye)) {
+                    listen_result_future.requestCancellation();
                     // No help is required, Pepper says goodbye
                     animation_future = goodbye_animation.async().run();
                     // A new user comes by - restart scenario

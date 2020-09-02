@@ -88,8 +88,8 @@
 
     <Button
         android:id="@+id/marketF"
-        android:layout_width="48dp"
-        android:layout_height="24dp"
+        android:layout_width="45dp"
+        android:layout_height="26dp"
         android:layout_marginStart="197dp"
         android:layout_marginEnd="432dp"
         android:layout_marginBottom="176dp"
@@ -97,10 +97,10 @@
         android:foreground="@drawable/ripple_effect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintHorizontal_bias="0.329"
         app:layout_constraintStart_toEndOf="@+id/marketE"
         app:layout_constraintTop_toBottomOf="@+id/marketG"
-        app:layout_constraintVertical_bias="0.74" />
+        app:layout_constraintVertical_bias="0.743" />
 
     <Button
         android:id="@+id/marketG"
