@@ -18,16 +18,16 @@
 
     <Button
         android:id="@+id/terminate"
-        android:layout_width="184dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:width="96dp"
-        android:height="98dp"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:width="100dp"
+        android:height="100dp"
         android:background="@drawable/custom_button"
-        android:text="Termina"
+        android:text="exit"
         android:textColor="@android:color/white"
-        android:textSize="5mm"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/imageView" />
 
@@ -128,6 +128,7 @@
     <!--Directions towards market C-->
     <ImageView
         android:id="@+id/marketC_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginStart="50dp"
@@ -141,6 +142,7 @@
 
     <ImageView
         android:id="@+id/marketC_direction2"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginStart="40dp"
@@ -154,6 +156,7 @@
 
     <ImageView
         android:id="@+id/marketC_direction3"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginStart="10dp"
@@ -167,6 +170,7 @@
 
     <ImageView
         android:id="@+id/marketC_direction4"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="30dp"
         android:layout_marginStart="30dp"
@@ -181,6 +185,7 @@
     <!--Directions toward market D and E-->
     <ImageView
         android:id="@+id/marketDE_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginTop="400dp"
@@ -194,6 +199,7 @@
 
     <ImageView
         android:id="@+id/marketDE_direction2"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginTop="400dp"
@@ -207,6 +213,7 @@
 
     <ImageView
         android:id="@+id/marketDE_direction3"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginTop="400dp"
@@ -220,6 +227,7 @@
 
     <ImageView
         android:id="@+id/marketDE_direction4"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginTop="400dp"
@@ -233,6 +241,7 @@
 
     <ImageView
         android:id="@+id/marketE_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginTop="400dp"
@@ -246,6 +255,7 @@
 
     <ImageView
         android:id="@+id/marketD_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginTop="400dp"
@@ -261,6 +271,7 @@
     <!--Directions toward market F,B,G and A-->
     <ImageView
         android:id="@+id/marketFBGA_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginBottom="48dp"
@@ -273,6 +284,7 @@
 
     <ImageView
         android:id="@+id/marketF_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginBottom="44dp"
@@ -285,6 +297,7 @@
 
     <ImageView
         android:id="@+id/marketB_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginBottom="44dp"
@@ -297,6 +310,7 @@
 
     <ImageView
         android:id="@+id/marketGA_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginBottom="84dp"
@@ -309,6 +323,7 @@
 
     <ImageView
         android:id="@+id/marketGA_direction2"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginBottom="56dp"
@@ -322,6 +337,7 @@
 
     <ImageView
         android:id="@+id/marketA_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginBottom="56dp"
@@ -334,6 +350,7 @@
 
     <ImageView
         android:id="@+id/marketG_direction1"
+        android:tag="arrow"
         android:layout_width="35dp"
         android:layout_height="34dp"
         android:layout_marginBottom="21dp"

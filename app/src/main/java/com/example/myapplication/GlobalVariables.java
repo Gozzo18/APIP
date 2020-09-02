@@ -1,64 +1,41 @@
 package com.example.myapplication;
 
-import android.app.Application;
+import java.io.Serializable;
 
-public class GlobalVariables extends Application {
-
-    //Define the variables to store for the whole application
+public class GlobalVariables implements Serializable {
     private boolean isBlind;
-    private boolean isAlmostBlind;
-    private boolean isColorBlind;
     private boolean isDeaf;
     private boolean isMute;
-    private boolean isPhysicallyDisabled;
+    private boolean isColorBlind;
+    private boolean isVisuallyImpaired;
 
-    //region Getters and Setters
-    public boolean getBlind() {
-        return isBlind;
+    public GlobalVariables() {
+        isBlind = false;
+        isVisuallyImpaired = false;
+        isColorBlind = false;
+        isDeaf = false;
+        isMute = false;
     }
 
-    public void setBlind(boolean blind) {
-        isBlind = blind;
-    }
+    // Get and set methods
+    public boolean getBlind() { return isBlind; }
 
-    public boolean getAlmostBlind() {
-        return isAlmostBlind;
-    }
+    public void setBlind(boolean blind) { isBlind = blind; }
 
-    public void setAlmostBlind(boolean almostBlind) {
-        isAlmostBlind = almostBlind;
-    }
+    public boolean getVisuallyImpaired() { return isVisuallyImpaired; }
 
-    public boolean getColorBlind() {
-        return isColorBlind;
-    }
+    public void setVisuallyImpaired(boolean almostBlind) { isVisuallyImpaired = almostBlind; }
 
-    public void setColorBlind(boolean colorBlind) {
-        isColorBlind = colorBlind;
-    }
+    public boolean getColorBlind() { return isColorBlind; }
 
-    public boolean getDeaf() {
-        return isDeaf;
-    }
+    public void setColorBlind(boolean colorBlind) { isColorBlind = colorBlind; }
 
-    public void setDeaf(boolean deaf) {
-        isDeaf = deaf;
-    }
+    public boolean getDeaf() { return isDeaf; }
 
-    public boolean getMute() {
-        return isMute;
-    }
+    public void setDeaf(boolean deaf) { isDeaf = deaf; }
 
-    public void setMute(boolean mute) {
-        isMute = mute;
-    }
+    public boolean getMute() { return isMute; }
 
-    public boolean getPhysicallyDisabled() {
-        return isPhysicallyDisabled;
-    }
+    public void setMute(boolean mute) { isMute = mute; }
 
-    public void setPhysicallyDisabled(boolean physicallyDisabled) {
-        isPhysicallyDisabled = physicallyDisabled;
-    }
-    //endregion
 }

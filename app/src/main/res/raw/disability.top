@@ -1,16 +1,20 @@
 topic: ~disability()
+
 # Defining extra concepts out of words or group of words
-concept:(generic_blindness) ["problemi visivi" vista "vedo poco"]
-concept:(peculiar_blindness) [daltonico daltonismo cieco ipovedente]
-concept:(deafness) [sordo "non udente" audioleso]
-concept:(physical_disabilities) [mutilato "un braccio" "una mano" dita dito zoppo paralizzato]
+concept:(blindness) ["blind" "can't see"]
+concept:(deafness) [deaf "can't hear" "hearing impaired"]
+concept:(color_blind) ["color blind" daltonism "colorblindness"]
+concept:(visually_impaired) ["visually impaired"]
+concept:(visual_disability) ["visual problems" "visual issues" visual "see little"]
+concept:(no) [No Nope Nah Nada]
 
 # Replying to speech
-u:(~generic_blindness) Puoi essere più specifico? ^stayInScope
-    #Directly set the disability_type variable to predefined values
-    u1:( [cieco "non vedente"]) $disability_type=cieco Cercherò di parlare il più chiaramente possibile! ^endDiscuss(Memorizzazione effettuate con successo)
-    u1:( [ipovedente "vedo poco"]) $disability_type=ipovedente Attiverò la funzione di ingradimento sul mio tablet se necessario. ^endDiscuss(Memorizzazione effettuate con successo)
-    u1:( [daltonico daltonismo] ) $disability_type=daltonico Eviterò di usare colori che possano darti fastidio. ^endDiscuss(Memorizzazione effettuate con successo)
-u:(_~peculiar_blindness) $disability_type=$1 Nessun problema, sono in grado di adattarmi facilmente! ^endDiscuss(Memorizzazione effettuate con successo)
-u:(~deafness) $disability_type=sordo Ti mostrerò le informazioni sul mio tablet! ^endDiscuss(Memorizzazione effettuate con successo)
-u:(~physical_disabilities) $disability_type=menomato Eviterò di utilizzare il tablet. ^endDiscuss(Memorizzazione effettuate con successo)
+u:(~blindness) $disability_type=blind Ok, I will try to use only my voice ^endDiscuss(Memorizzazione effettuate con successo)
+u:(~deafness) $disability_type=deaf ^endDiscuss(Memorizzazione effettuate con successo)
+u:(~color_blind) $disability_type=colorBlind Ok, I will try to be careful with the colors ^endDiscuss(Memorizzazione effettuate con successo)
+u:(~visually_impaired) $disability_type=visuallyImpaired Ok, I will try to increase the size of the interface ^endDiscuss(Memorizzazione effettuate con successo)
+u:(~no) $disability_type=no Ok ^endDiscuss(Memorizzazione effettuate con successo)
+u:(~visual_disability) Can you be more specific? ^stayInScope
+    #Directly set the disability_type variable to predefined values (?)
+    u1:(["color blind" daltonism "colorblindness"]) $disability_type=colorblind Ok, I will try to be careful with the colors ^endDiscuss(Memorizzazione effettuate con successo)
+    u1:(["visually impaired"]) $disability_type=visuallyImpaired Ok, I will try to increase the size of the interface ^endDiscuss(Memorizzazione effettuate con successo)

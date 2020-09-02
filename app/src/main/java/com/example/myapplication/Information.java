@@ -23,7 +23,6 @@ import com.aldebaran.qi.sdk.builder.SayBuilder;
 import com.aldebaran.qi.sdk.builder.TopicBuilder;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition;
-import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy;
 import com.aldebaran.qi.sdk.object.actuation.Animate;
 import com.aldebaran.qi.sdk.object.actuation.Animation;
 import com.aldebaran.qi.sdk.object.conversation.Chat;
@@ -39,8 +38,12 @@ import java.util.Random;
 
 public class Information extends RobotActivity implements RobotLifecycleCallbacks {
 
-    private static final String TAG = "Information";
     private QiContext qiContext;
+    private static final String TAG = "Information";
+
+    // Global variables
+    private GlobalVariables globalVariables;
+
     private QiChatbot information_chatBot;
     public QiChatVariable information_type;
     private Chat information_chat;
@@ -53,11 +56,14 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Set type and position of speechbar https://android.aldebaran.com/sdk/doc/pepper-sdk/ch4_api/conversation/conversation_feedbacks.html
-        setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.OVERLAY);
+
+        globalVariables = (GlobalVariables) getIntent().getSerializableExtra("globalVariables");
+
         setSpeechBarDisplayPosition(SpeechBarDisplayPosition.TOP);
-        //Set the current layout view to activity_main.xml
+
+        // Set the current layout view to activity_information.xml
         setContentView(R.layout.activity_information);
+
         QiSDK.register(this, this);
 
     }
@@ -66,6 +72,7 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     protected void onDestroy() {
         // Unregister the RobotLifecycleCallbacks for this Activity.
         QiSDK.unregister(this, this);
+
         super.onDestroy();
     }
 
@@ -95,45 +102,44 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         final Button indicationButton = findViewById(R.id.indication_button);
         final Button humorButton = findViewById(R.id.humor_button);
         final Button weatherButton = findViewById(R.id.weather_button);
-        final TextView textView = (TextView)findViewById(R.id.textView3);
-        final ImageView weatherImage = (ImageView)findViewById(R.id.weather_image);
+        final TextView textView = (TextView) findViewById(R.id.textView2);
+        final ImageView weatherImage = (ImageView) findViewById(R.id.weather_image);
 
-        final String[] jokes = {"Perché la bambina è caduta dall'altalena? Perché non aveva le braccia!",
-                                "Come fa una mucca senza labbra? Uuuuuuuuuuuuuuu.",
-                                "Come fa una pecora ubriaca? Beeeeeeeeeeeecks."};
+        final String[] jokes = {"Joke 1", "Joke 2", "Joke 3", "Joke n"};
 
-        final String[] weather = {"É nuvoloso", "C'è il sole", "Poco nuvoloso", "Sta piovendo"};
+        final String[] weather = {"It's cloudy", "It's sunny", "It's little cloudy", "It's raining"};
 
-        timeButton.setOnClickListener(v->{
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+        timeButton.setOnClickListener(v -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM HH:mm", Locale.getDefault());
             textView.setText(sdf.format(new Date()));
-            time_animation.andThenConsume(animation->{
+            time_animation.andThenConsume(animation -> {
                 animation.async().run();
             });
-
         });
 
-        indicationButton.setOnClickListener(v->{
+        indicationButton.setOnClickListener(v -> {
             future_chat.requestCancellation();
-            Future<Say> prepareNextActivity = SayBuilder.with(qiContext).withText("Dove vuoi andare?").buildAsync();
+            Future<Say> prepareNextActivity = SayBuilder.with(qiContext).withText("Where do you want to go?").buildAsync();
             prepareNextActivity.andThenConsume(say->{
                 Animation AnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a004).build();
                 affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(AnimationObject).build();
                 Future.waitAll(say.async().run(), affirmationAnimation.async().run());
                 Thread.sleep(1500);
-                startActivity(new Intent(this, Indications.class));
+                Intent changeActivity = new Intent(this, Indications.class);
+                changeActivity.putExtra("globalVariables", globalVariables);
+                startActivity(changeActivity);
             });
         });
 
-        humorButton.setOnClickListener(v->{
+        humorButton.setOnClickListener(v -> {
             int rnd = new Random().nextInt(jokes.length);
             textView.setText(jokes[rnd]);
-            humor_animation.andThenConsume(animation->{
+            humor_animation.andThenConsume(animation -> {
                 animation.async().run();
             });
         });
 
-        weatherButton.setOnClickListener(v->{
+        weatherButton.setOnClickListener(v -> {
             int rnd = new Random().nextInt(weather.length);
             textView.setText(weather[rnd]);
             fadeOutButton(timeButton);
@@ -141,7 +147,7 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
             fadeOutButton(humorButton);
             fadeOutButton(weatherButton);
 
-            switch (rnd){
+            switch (rnd) {
                 case 0:
                     weatherImage.setImageResource(R.drawable.cloud);
                     weatherImage.setVisibility(View.VISIBLE);
@@ -168,40 +174,35 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
                     fadeInButton(indicationButton);
                     fadeInButton(humorButton);
                     fadeInButton(weatherButton);
-                    textView.setText("Posso fare altro?");
+                    textView.setText("Can I do anything else?");
                 }
-            }, 3000);
+            }, 2000);
 
         });
     }
 
     private void initChat() {
-
         Topic information_topic = TopicBuilder.with(qiContext).withResource(R.raw.small_talk).build();
 
         information_chatBot = QiChatbotBuilder.with(qiContext).withTopic(information_topic).build();
 
         information_chat = ChatBuilder.with(qiContext).withChatbot(information_chatBot).build();
-        information_chat.addOnStartedListener(() -> Log.i(TAG, "Chat started."));
-        information_chat.addOnNoPhraseRecognizedListener(() -> {
-            Say repeat = SayBuilder.with(qiContext).withText("Mi dispiace, non ho capito. Puoi ripetere?").build();
-            repeat.async().run();
-        });
 
         information_chatBot.addOnEndedListener(endReason -> {
             Log.i(TAG, "qichatbot end reason = " + endReason);
             future_chat.requestCancellation();
-            startActivity(new Intent(this, Indications.class));
+            Intent changeActivity = new Intent(this, Indications.class);
+            changeActivity.putExtra("globalVariables", globalVariables);
+            startActivity(changeActivity);
         });
     }
 
     private void initAnimations(){
-
         Animation affirmationAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a004).build();
         affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(affirmationAnimationObject).build();
-        affirmationAnimation.addOnStartedListener(()->{
-            Future<Say> askInformation = SayBuilder.with(qiContext).withText("Come posso aiutarti?").buildAsync();
-            askInformation.andThenConsume(say->{
+        affirmationAnimation.addOnStartedListener(() -> {
+            Future<Say> askInformation = SayBuilder.with(qiContext).withText("How can I help you?").buildAsync();
+            askInformation.andThenConsume(say -> {
                 initUiElements();
                 future_chat = information_chat.async().run();
             });
@@ -215,7 +216,8 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
 
     }
 
-    //region Animation methods
+
+
     private void fadeOutButton(Button b) {
         b.animate()
                 .alpha(0f) //Button becomes transparent
@@ -241,5 +243,4 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
                     }
                 });
     }
-    //endregion
 }

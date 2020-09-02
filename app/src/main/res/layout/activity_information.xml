@@ -7,76 +7,65 @@
     tools:context=".Information">
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="98dp"
-        android:text="Come posso aiutarti?"
+        android:layout_height="0dp"
+        android:layout_marginTop="60dp"
+        android:text="How can I help you?"
         android:textAlignment="center"
-        android:textSize="50sp"
+        android:textSize="60sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <GridLayout
-        android:id="@+id/gridLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:rowCount="2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
+    <Button
+        android:id="@+id/time_button"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:background="@drawable/custom_button"
+        android:text="time"
+        android:textColor="#FFFFFF"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="542dp"
+        tools:layout_editor_absoluteY="373dp" />
 
-        <Button
-            android:id="@+id/time_button"
-            android:layout_row="0"
-            android:layout_column="0"
-            android:layout_marginRight="50dp"
-            android:width="190dp"
-            android:height="128dp"
-            android:background="@drawable/custom_button"
-            android:text="Ora"
-            android:textColor="@android:color/white"
-            android:textSize="25dp" />
+    <Button
+        android:id="@+id/indication_button"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:background="@drawable/custom_button"
+        android:text="directions"
+        android:textColor="#FFFFFF"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="75dp"
+        tools:layout_editor_absoluteY="175dp" />
 
-        <Button
-            android:id="@+id/indication_button"
-            android:layout_row="0"
-            android:layout_column="1"
-            android:width="190dp"
-            android:height="128dp"
-            android:background="@drawable/custom_button"
-            android:text="Indicazioni"
-            android:textColor="@android:color/white"
-            android:textSize="25dp" />
+    <Button
+        android:id="@+id/humor_button"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:background="@drawable/custom_button"
+        android:text="jokes"
+        android:textColor="#FFFFFF"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="75dp"
+        tools:layout_editor_absoluteY="375dp" />
 
-        <Button
-            android:id="@+id/humor_button"
-            android:layout_row="1"
-            android:layout_column="0"
-            android:layout_marginTop="50dp"
-            android:width="190dp"
-            android:height="128dp"
-            android:background="@drawable/custom_button"
-            android:text="Barzelletta"
-            android:textColor="@android:color/white"
-            android:textSize="25dp" />
-
-        <Button
-            android:id="@+id/weather_button"
-            android:layout_row="1"
-            android:layout_column="1"
-            android:layout_marginTop="50dp"
-            android:width="190dp"
-            android:height="128dp"
-            android:background="@drawable/custom_button"
-            android:text="Tempo"
-            android:textColor="@android:color/white"
-            android:textSize="25dp" />
-    </GridLayout>
+    <Button
+        android:id="@+id/weather_button"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:background="@drawable/custom_button"
+        android:text="weather"
+        android:textColor="#FFFFFF"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="542dp"
+        tools:layout_editor_absoluteY="175dp" />
 
     <ImageView
         android:layout_width="431dp"
@@ -89,4 +78,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.77" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

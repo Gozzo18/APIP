@@ -10,12 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.aldebaran.qi.sdk.QiContext;
 import com.aldebaran.qi.sdk.QiSDK;
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
-import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy;
 
 public class Indications  extends RobotActivity implements RobotLifecycleCallbacks {
@@ -23,20 +23,12 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
     private static final String TAG = "Disability";
     private QiContext qiContext;
 
-    public AlertDialog.Builder builder;
-    public AlertDialog confirmLocation;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Set type and position of speechbar https://android.aldebaran.com/sdk/doc/pepper-sdk/ch4_api/conversation/conversation_feedbacks.html
         setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.OVERLAY);
-        setSpeechBarDisplayPosition(SpeechBarDisplayPosition.TOP);
         setContentView(R.layout.activity_indications);
         QiSDK.register(this, this);
-        //Build the AlertBox here, otherwise "context" is null
-        builder = new AlertDialog.Builder(this);
     }
 
     @Override
@@ -55,6 +47,17 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
 
     }
 
+    private void clearAllArrows() {
+//        RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
+//        for (int i = 0; i < layout.getChildCount(); i++) {
+//            View subView = layout .getChildAt(i);
+//            if (subView instanceof ImageView) {
+//                ImageView imageView = (ImageView) subView;
+//                fadeOutImage(imageView);
+//            }
+//        }
+    }
+
     private void initUiElements() {
         final Button marketA = findViewById(R.id.marketA);
         final Button marketB = findViewById(R.id.marketB);
@@ -65,224 +68,92 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
         final Button marketG = findViewById(R.id.marketG);
         final Button terminate = findViewById(R.id.terminate);
 
-        terminate.setOnClickListener(v->{
+        terminate.setOnClickListener( v-> {
             Log.i(TAG, "Map indication finished");
             //Restart to the previous activity
             startActivity(new Intent(this, Information.class));
         });
 
-        marketA.setOnClickListener(v->{
+        marketA.setOnClickListener(v -> {
             Log.i(TAG, "Market A selected");
-            //Set title and message that should appear in the dialog box
-            builder.setTitle("Conferma");
-            builder.setMessage("Vuoi andare al negozio A?");
-            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-
-                    fadeInImage((findViewById((R.id.marketFBGA_direction1))));
-                    fadeInImage((findViewById((R.id.marketGA_direction1))));
-                    fadeInImage((findViewById((R.id.marketGA_direction2))));
-                    fadeInImage((findViewById((R.id.marketA_direction1))));
-                    //Close the alert box
-                    dialog.dismiss();
-                }
-            });
-
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //Simply close the alert box
-                    dialog.dismiss();
-                }
-            });
-            confirmLocation = builder.create();
-            confirmLocation.show();
+            clearAllArrows();
+            fadeInImage((findViewById((R.id.marketFBGA_direction1))));
+            fadeInImage((findViewById((R.id.marketGA_direction1))));
+            fadeInImage((findViewById((R.id.marketGA_direction2))));
+            fadeInImage((findViewById((R.id.marketA_direction1))));
         });
 
         marketB.setOnClickListener(v->{
             Log.i(TAG, "Market B selected");
-            builder.setTitle("Conferma");
-            builder.setMessage("Vuoi andare al negozio B?");
-            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int which) {
-                    fadeInImage((findViewById((R.id.marketFBGA_direction1))));
-                    fadeInImage((findViewById((R.id.marketB_direction1))));
-                    //Close the alert box
-                    dialog.dismiss();
-                }
-            });
-
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            confirmLocation = builder.create();
-            confirmLocation.show();
+            clearAllArrows();
+            fadeInImage((findViewById((R.id.marketFBGA_direction1))));
+            fadeInImage((findViewById((R.id.marketB_direction1))));
         });
+
 
         marketC.setOnClickListener(v->{
             Log.i(TAG, "Market C selected");
-            builder.setTitle("Conferma");
-            builder.setMessage("Vuoi andare al negozio C?");
-            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int which) {
-                    fadeInImage((findViewById((R.id.marketC_direction1))));
-                    fadeInImage((findViewById((R.id.marketC_direction2))));
-                    fadeInImage((findViewById((R.id.marketC_direction3))));
-                    fadeInImage((findViewById((R.id.marketC_direction4))));
-                    //Close the alert box
-                    dialog.dismiss();
-                }
-            });
-
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            confirmLocation = builder.create();
-            confirmLocation.show();
+            clearAllArrows();
+            fadeInImage((findViewById((R.id.marketC_direction1))));
+            fadeInImage((findViewById((R.id.marketC_direction2))));
+            fadeInImage((findViewById((R.id.marketC_direction3))));
+            fadeInImage((findViewById((R.id.marketC_direction4))));
         });
 
-        marketD.setOnClickListener(v->{
+        marketD.setOnClickListener(v -> {
             Log.i(TAG, "Market D selected");
-            builder.setTitle("Conferma");
-            builder.setMessage("Vuoi andare al negozio D?");
-            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int which) {
-                    fadeInImage((findViewById((R.id.marketD_direction1))));
-                    fadeInImage((findViewById((R.id.marketDE_direction1))));
-                    fadeInImage((findViewById((R.id.marketDE_direction2))));
-                    fadeInImage((findViewById((R.id.marketDE_direction3))));
-                    fadeInImage((findViewById((R.id.marketDE_direction4))));
-
-
-                    //Close the alert box
-                    dialog.dismiss();
-                }
-            });
-
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            confirmLocation = builder.create();
-            confirmLocation.show();
+            clearAllArrows();
+            fadeInImage((findViewById((R.id.marketD_direction1))));
+            fadeInImage((findViewById((R.id.marketDE_direction1))));
+            fadeInImage((findViewById((R.id.marketDE_direction2))));
+            fadeInImage((findViewById((R.id.marketDE_direction3))));
+            fadeInImage((findViewById((R.id.marketDE_direction4))));
         });
 
-        marketE.setOnClickListener(v->{
-
+        marketE.setOnClickListener(v -> {
             Log.i(TAG, "Market E selected");
-            builder.setTitle("Conferma");
-            builder.setMessage("Vuoi andare al negozio E?");
-            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int which) {
-                    fadeInImage((findViewById((R.id.marketDE_direction1))));
-                    fadeInImage((findViewById((R.id.marketDE_direction2))));
-                    fadeInImage((findViewById((R.id.marketDE_direction3))));
-                    fadeInImage((findViewById((R.id.marketDE_direction4))));
-                    fadeInImage((findViewById((R.id.marketE_direction1))));
-
-                    //Close the alert box
-                    dialog.dismiss();
-                }
-            });
-
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            confirmLocation = builder.create();
-            confirmLocation.show();
+            clearAllArrows();
+            fadeInImage((findViewById((R.id.marketDE_direction1))));
+            fadeInImage((findViewById((R.id.marketDE_direction2))));
+            fadeInImage((findViewById((R.id.marketDE_direction3))));
+            fadeInImage((findViewById((R.id.marketDE_direction4))));
+            fadeInImage((findViewById((R.id.marketE_direction1))));
         });
 
         marketF.setOnClickListener(v->{
             Log.i(TAG, "Market F selected");
-            builder.setTitle("Conferma");
-            builder.setMessage("Vuoi andare al negozio F?");
-            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int which) {
-
-                    fadeInImage((findViewById((R.id.marketFBGA_direction1))));
-                    fadeInImage((findViewById((R.id.marketF_direction1))));
-
-
-                    //Close the alert box
-                    dialog.dismiss();
-                }
-            });
-
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            confirmLocation = builder.create();
-            confirmLocation.show();
+            clearAllArrows();
+            fadeInImage((findViewById((R.id.marketFBGA_direction1))));
+            fadeInImage((findViewById((R.id.marketF_direction1))));
         });
 
         marketG.setOnClickListener(v->{
             Log.i(TAG, "Market G selected");
-            builder.setTitle("Conferma");
-            builder.setMessage("Vuoi andare al negozio G?");
-            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int which) {
-                    fadeInImage((findViewById((R.id.marketFBGA_direction1))));
-                    fadeInImage((findViewById((R.id.marketGA_direction2))));
-                    fadeInImage((findViewById((R.id.marketGA_direction1))));
-                    fadeInImage((findViewById((R.id.marketG_direction1))));
-
-
-
-                    //Close the alert box
-                    dialog.dismiss();
-                }
-            });
-
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            confirmLocation = builder.create();
-            confirmLocation.show();
+            clearAllArrows();
+            fadeInImage((findViewById((R.id.marketFBGA_direction1))));
+            fadeInImage((findViewById((R.id.marketGA_direction2))));
+            fadeInImage((findViewById((R.id.marketGA_direction1))));
+            fadeInImage((findViewById((R.id.marketG_direction1))));
         });
 
-
-
     }
-    private void fadeInImage (ImageView im) {
-        im.animate()
-                .alpha(1f) //image becomes transparent
-                .setDuration(200) //Set the length of the animation
-                .setListener(new AnimatorListenerAdapter() {
-                    //When the animation ends, make the button disappear
+
+    private void fadeInImage(ImageView im) {
+        im.animate().alpha(1f).setDuration(200).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         im.setVisibility(View.VISIBLE);
                     }
                 });
     }
+
+    private void fadeOutImage(ImageView im) {
+        im.animate().alpha(0f).setDuration(200).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        im.setVisibility(View.GONE);
+                    }
+                });
+    }
+
 }
