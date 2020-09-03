@@ -46,6 +46,10 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
     private Animate affirmationAnimation;
     private Future<Void> affirmationAnimationF;
 
+    private Animate gotItAnimation;
+    private Future<Void> gotItAnimationF;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +101,13 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                     case "no":
                         break;
                 }
-                Intent changeActivity = new Intent(this, Information.class);
-                changeActivity.putExtra("globalVariables", globalVariables);
-                startActivity(changeActivity);
+                future_chat.requestCancellation();
+                gotItAnimationF = gotItAnimation.async().run();
+                gotItAnimationF.andThenConsume(change->{
+                    Intent changeActivity = new Intent(this, Information.class);
+                    changeActivity.putExtra("globalVariables", globalVariables);
+                    startActivity(changeActivity);
+                });
             });
         });
     }
@@ -133,6 +141,27 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
             askDisability.run();
             //Then starts chatting with it
             future_chat = disability_chat.async().run();
+        });
+
+        Animation gotItAnimationObject =  AnimationBuilder.with(qiContext).withResources(R.raw.left_hand_low_b001).build();
+        gotItAnimation = AnimateBuilder.with(qiContext).withAnimation(gotItAnimationObject).build();
+        gotItAnimation.addOnStartedListener(()->{
+            if (globalVariables.getMute()){
+                Say gotIt = SayBuilder.with(qiContext).withText("Got it! Then pay attention to my movements and the tablet.").build();
+                gotIt.run();
+            }else if (globalVariables.getColorBlind()){
+                Say gotIt = SayBuilder.with(qiContext).withText("Colors will not be a problem! Every UI element will be easily distinguishable.").build();
+                gotIt.run();
+            }else if (globalVariables.getVisuallyImpaired()){
+                Say gotIt = SayBuilder.with(qiContext).withText("The font size should be big enough, but you can still user your voice to communicate with me!.").build();
+                gotIt.run();
+            }else if(globalVariables.getBlind()){
+                Say gotIt = SayBuilder.with(qiContext).withText("Ok, then pay attention to my voice!").build();
+                gotIt.run();
+            }else if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()){
+                Say gotIt = SayBuilder.with(qiContext).withText("Fine, both touch and voice inputs are enabled!").build();
+                gotIt.run();
+            }
         });
     }
 
@@ -168,9 +197,8 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
             if (future_chat != null) {
                 future_chat.requestCancellation();
             }
-            Future<Say> memorized = SayBuilder.with(qiContext).withText("Got it! Then pay attention to my movements and the tablet.").buildAsync();
-            memorized.andThenConsume(gotIt->{
-                gotIt.async().run();
+            gotItAnimationF = gotItAnimation.async().run();
+            gotItAnimationF.andThenConsume(change->{
                 Intent changeActivity = new Intent(this, Information.class);
                 changeActivity.putExtra("globalVariables", globalVariables);
                 startActivity(changeActivity);
@@ -191,9 +219,8 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 if (future_chat != null) {
                     future_chat.requestCancellation();
                 }
-                Future<Say> memorized = SayBuilder.with(qiContext).withText("Ricevuto").buildAsync();
-                memorized.andThenConsume(gotIt->{
-                    gotIt.async().run();
+                gotItAnimationF = gotItAnimation.async().run();
+                gotItAnimationF.andThenConsume(change->{
                     Intent changeActivity = new Intent(this, Information.class);
                     changeActivity.putExtra("globalVariables", globalVariables);
                     startActivity(changeActivity);
@@ -205,10 +232,8 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 if (future_chat != null) {
                     future_chat.requestCancellation();
                 }
-                future_chat.requestCancellation();
-                Future<Say> memorized = SayBuilder.with(qiContext).withText("Ricevuto").buildAsync();
-                memorized.andThenConsume(gotIt->{
-                    gotIt.async().run();
+                gotItAnimationF = gotItAnimation.async().run();
+                gotItAnimationF.andThenConsume(change->{
                     Intent changeActivity = new Intent(this, Information.class);
                     changeActivity.putExtra("globalVariables", globalVariables);
                     startActivity(changeActivity);
@@ -221,19 +246,22 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 future_chat.requestCancellation();
             }
             globalVariables.setDeaf(true);
-            textView.setText("Ricevuto!");
-            Intent changeActivity = new Intent(this, Information.class);
-            changeActivity.putExtra("globalVariables", globalVariables);
-            startActivity(changeActivity);
+            textView.setTextSize(40);
+            textView.setText("All information will be displayed on the tablet!");
+            gotItAnimationF = gotItAnimation.async().run();
+            gotItAnimationF.andThenConsume(change-> {
+                Intent changeActivity = new Intent(this, Information.class);
+                changeActivity.putExtra("globalVariables", globalVariables);
+                startActivity(changeActivity);
+            });
         });
 
         button_no.setOnClickListener(v -> {
             if (future_chat != null) {
                 future_chat.requestCancellation();
             }
-            Future<Say> memorized = SayBuilder.with(qiContext).withText("Ok").buildAsync();
-            memorized.andThenConsume(gotIt -> {
-                gotIt.async().run();
+            gotItAnimationF = gotItAnimation.async().run();
+            gotItAnimationF.andThenConsume(change->{
                 Intent changeActivity = new Intent(this, Information.class);
                 changeActivity.putExtra("globalVariables", globalVariables);
                 startActivity(changeActivity);

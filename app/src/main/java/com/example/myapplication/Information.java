@@ -46,12 +46,25 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     private Chat information_chat;
     public Future<Void> future_chat;
 
+    private Animate tabletfocusAnimation;
+    private Future<Void> tabletfocusAnimationFuture;
+
     private Animate affirmationAnimation;
-    private Future<Animate> humor_animation;
-    private Future<Animate> time_animation;
+    private Future<Void> affirmationAnimationFuture;
 
     public Animate goodbyeAnimation;
     public Future<Void> goodbyeAnimationFuture;
+
+    private Future<Animate> humor_animation;
+    private Future<Animate> time_animation;
+
+    public TextView textView;
+    public Button timeButton;
+    public Button indicationButton;
+    public Button humorButton;
+    public Button weatherButton;
+    public Button concludeInteraction;
+    public ImageView weatherImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +82,14 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         }
 
         QiSDK.register(this, this);
+
+        timeButton = findViewById(R.id.time_button);
+        indicationButton = findViewById(R.id.indication_button);
+        humorButton = findViewById(R.id.humor_button);
+        weatherButton = findViewById(R.id.weather_button);
+        concludeInteraction = findViewById(R.id.end_interaction);
+        textView = findViewById(R.id.textView3);
+        weatherImage = findViewById(R.id.weather_image);
     }
 
     @Override
@@ -82,16 +103,15 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     public void onRobotFocusGained(QiContext qiContext) {
         this.qiContext = qiContext;
 
-        initTerminateAnimation();
+        initAnimations();
+        initUiElements();
 
         //User has no disability - Both chat and animation are active
         if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()){
             initChat();
-            initAnimations();
             affirmationAnimation.run();
-        }else if (globalVariables.getMute()){
+        }else if (globalVariables.getMute()) {
             //User can't talk, no chat
-            initAnimations();
             affirmationAnimation.run();
         }
 
@@ -112,14 +132,6 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     }
 
     private void initUiElements(){
-        final Button timeButton = findViewById(R.id.time_button);
-        final Button indicationButton = findViewById(R.id.indication_button);
-        final Button humorButton = findViewById(R.id.humor_button);
-        final Button weatherButton = findViewById(R.id.weather_button);
-        final Button concludeInteraction = findViewById(R.id.end_interaction);
-        final TextView textView = (TextView)findViewById(R.id.textView3);
-        final ImageView weatherImage = (ImageView)findViewById(R.id.weather_image);
-
         final String[] jokes = {"Joke 1", "Joke 2", "Joke 3", "Joke n"};
 
         timeButton.setOnClickListener(v->{
@@ -128,19 +140,17 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
             time_animation.andThenConsume(animation->{
                 animation.async().run();
             });
-
         });
 
         indicationButton.setOnClickListener(v->{
             if (future_chat != null){
                 future_chat.requestCancellation();
             }
-            Future<Say> prepareNextActivity = SayBuilder.with(qiContext).withText("Where do you wish to go?").buildAsync();
-            prepareNextActivity.andThenConsume(say->{
-                Animation AnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a004).build();
-                affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(AnimationObject).build();
-                Future.waitAll(say.async().run(), affirmationAnimation.async().run());
-                Thread.sleep(1000);
+            if (globalVariables.getDeaf()) {
+                textView.setText("Where do you whish to go?");
+            }
+            tabletfocusAnimationFuture = tabletfocusAnimation.async().run();
+            tabletfocusAnimationFuture.andThenConsume(change->{
                 Intent changeActivity = new Intent(this, Indications.class);
                 changeActivity.putExtra("globalVariables", globalVariables);
                 startActivity(changeActivity);
@@ -156,11 +166,9 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         });
 
         weatherButton.setOnClickListener(v->{
-
             //Weather API from openWeather
             Weather.placeIdTask asyncTask =new Weather.placeIdTask(new Weather.AsyncResponse() {
                 public void processFinish(String weather_city, String weather_description, String weather_temperature, String weather_humidity, String weather_pressure, String weather_updatedOn) {
-
                     //We are interested only on the current weather, not on tempetarute, pressure and so on
                     String current_weather = weather_description.substring(0,1).toUpperCase() + weather_description.substring(1);
                     textView.setText(current_weather);
@@ -225,16 +233,6 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         });
     }
 
-    private void initTerminateAnimation(){
-        Animation goodbyeAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.goodbye).build();
-        goodbyeAnimation = AnimateBuilder.with(qiContext).withAnimation(goodbyeAnimationObject).build();
-        // As soon as the animation starts, Pepper says goodbye to the user
-        goodbyeAnimation.addOnStartedListener(() -> {
-            Say goodbye = SayBuilder.with(qiContext).withText("Have a great day, bye!").build();
-            goodbye.async().run();
-        });
-    }
-
     private void initChat() {
 
         Topic information_topic = TopicBuilder.with(qiContext).withResource(R.raw.small_talk).build();
@@ -257,17 +255,38 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
 
     private void initAnimations(){
 
+        //Ending animation
+        Animation goodbyeAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.goodbye).build();
+        goodbyeAnimation = AnimateBuilder.with(qiContext).withAnimation(goodbyeAnimationObject).build();
+        // As soon as the animation starts, Pepper says goodbye to the user
+        if (!globalVariables.getDeaf()){
+            goodbyeAnimation.addOnStartedListener(() -> {
+                Say goodbye = SayBuilder.with(qiContext).withText("Have a great day, bye!").build();
+                goodbye.async().run();
+            });
+        }
+
         Animation affirmationAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a004).build();
         affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(affirmationAnimationObject).build();
         affirmationAnimation.addOnStartedListener(()->{
-            Future<Say> askInformation = SayBuilder.with(qiContext).withText("How can I help you?").buildAsync();
-            askInformation.andThenConsume(say->{
-                initUiElements();
-                if (!globalVariables.getMute()){
-                    future_chat = information_chat.async().run();
-                }
-            });
+            if (!globalVariables.getDeaf()){
+                Future<Say> askInformation = SayBuilder.with(qiContext).withText("How can I help you?").buildAsync();
+                askInformation.andThenConsume(say->{
+                    if (!globalVariables.getMute()){
+                        future_chat = information_chat.async().run();
+                    }
+                });
+            }
         });
+
+        Animation tabletfocusAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a004).build();
+        tabletfocusAnimation = AnimateBuilder.with(qiContext).withAnimation(tabletfocusAnimationObject).build();
+        if (!globalVariables.getDeaf()){
+            tabletfocusAnimation.addOnStartedListener(()->{
+                Say where = SayBuilder.with(qiContext).withText("Where do you wish to go?").build();
+                where.run();
+            });
+        }
 
         Animation humorAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a002).build();
         humor_animation = AnimateBuilder.with(qiContext).withAnimation(humorAnimationObject).buildAsync();

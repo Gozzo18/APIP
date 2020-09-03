@@ -9,12 +9,12 @@ concept:(visual_disability) ["visual problems" "visual issues" visual "see littl
 concept:(no) [No Nope Nah Nada]
 
 # Replying to speech
-u:(~blindness) $disability_type=blind Ok, I will try to use only my voice ^endDiscuss(Memorizzazione effettuate con successo)
-u:(~deafness) $disability_type=deaf ^endDiscuss(Memorizzazione effettuate con successo)
-u:(~color_blind) $disability_type=colorBlind Ok, I will try to be careful with the colors ^endDiscuss(Memorizzazione effettuate con successo)
-u:(~visually_impaired) $disability_type=visuallyImpaired Ok, I will try to increase the size of the interface ^endDiscuss(Memorizzazione effettuate con successo)
-u:(~no) $disability_type=no Ok ^endDiscuss(Memorizzazione effettuate con successo)
+u:(~blindness) $disability_type=blind
+u:(~deafness) $disability_type=deaf
+u:(~color_blind) $disability_type=colorBlind
+u:(~visually_impaired) $disability_type=visuallyImpaired
+u:(~no) $disability_type=no
 u:(~visual_disability) Can you be more specific? ^stayInScope
     #Directly set the disability_type variable to predefined values (?)
-    u1:(["color blind" daltonism "colorblindness"]) $disability_type=colorblind Ok, I will try to be careful with the colors ^endDiscuss(Memorizzazione effettuate con successo)
-    u1:(["visually impaired"]) $disability_type=visuallyImpaired Ok, I will try to increase the size of the interface ^endDiscuss(Memorizzazione effettuate con successo)
+    u1:(["color blind" daltonism "colorblindness"]) $disability_type=colorblind
+    u1:(["visually impaired"]) $disability_type=visuallyImpaired
