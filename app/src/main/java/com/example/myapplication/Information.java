@@ -76,7 +76,7 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
 
         // Set the current layout view
         if (globalVariables.getVisuallyImpaired()) {
-            setContentView(R.layout.activity_information_XL);
+            setContentView(R.layout.activity_information_xl);
         } else {
             setContentView(R.layout.activity_information);
         }
