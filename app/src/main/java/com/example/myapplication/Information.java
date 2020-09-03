@@ -53,6 +53,9 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     private Future<Animate> humor_animation;
     private Future<Animate> time_animation;
 
+    public Animate goodbyeAnimation;
+    public Future<Void> goodbyeAnimationFuture;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +78,8 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
         this.qiContext = qiContext;
+
+        initTerminateAnimation();
 
         //User has no disability - Both chat and animation are active
         if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()){
@@ -108,6 +113,7 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         final Button indicationButton = findViewById(R.id.indication_button);
         final Button humorButton = findViewById(R.id.humor_button);
         final Button weatherButton = findViewById(R.id.weather_button);
+        final Button concludeInteraction = findViewById(R.id.end_interaction);
         final TextView textView = (TextView)findViewById(R.id.textView3);
         final ImageView weatherImage = (ImageView)findViewById(R.id.weather_image);
 
@@ -159,6 +165,7 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
                     fadeOutButton(indicationButton);
                     fadeOutButton(humorButton);
                     fadeOutButton(weatherButton);
+                    fadeOutButton(concludeInteraction);
                     switch (current_weather){
                         case "Few clouds":
                         case "Scattered clouds":
@@ -192,10 +199,36 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
                     fadeInButton(indicationButton);
                     fadeInButton(humorButton);
                     fadeInButton(weatherButton);
+                    fadeInButton(concludeInteraction);
                     textView.setText("Anything else?");
                 }
             }, 3000);
+        });
 
+        concludeInteraction.setOnClickListener(v->{
+            if (future_chat != null){
+                future_chat.requestCancellation();
+            }
+            fadeOutButton(timeButton);
+            fadeOutButton(indicationButton);
+            fadeOutButton(humorButton);
+            fadeOutButton(weatherButton);
+            fadeOutButton(concludeInteraction);
+            textView.setText("Bye bye!");
+            goodbyeAnimationFuture = goodbyeAnimation.async().run();
+            goodbyeAnimationFuture.andThenConsume(finished->{
+                startActivity(new Intent(this, MainActivity.class));
+            });
+        });
+    }
+
+    private void initTerminateAnimation(){
+        Animation goodbyeAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.goodbye).build();
+        goodbyeAnimation = AnimateBuilder.with(qiContext).withAnimation(goodbyeAnimationObject).build();
+        // As soon as the animation starts, Pepper says goodbye to the user
+        goodbyeAnimation.addOnStartedListener(() -> {
+            Say goodbye = SayBuilder.with(qiContext).withText("Have a great day, bye!").build();
+            goodbye.async().run();
         });
     }
 

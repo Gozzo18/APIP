@@ -41,6 +41,10 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
 
     public Future<ListenResult> listen_result_future;
 
+    public TextView textView;
+    public Button buttonYes;
+    public Button buttonNo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +57,11 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
 
         // Register the RobotLifecycleCallbacks for this activity
         QiSDK.register(this, this);
+
+        //Retrieve a reference to Ui elements
+        textView = findViewById(R.id.textView1);
+        buttonNo =  findViewById(R.id.button_no);
+        buttonYes =  findViewById(R.id.button_yes);
     }
 
     @Override
@@ -100,8 +109,18 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
                     startActivity(changeActivity);
                 } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_no) ||
                            PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_bye)) {
-                    listen_result_future.requestCancellation();
                     // No help is required, Pepper says goodbye
+                    //Solves "Only the original thread that created a view hierarchy can touch its views."
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            buttonYes.setVisibility(View.GONE);
+                            buttonNo.setVisibility(View.GONE);
+                            textView.setText("Bye bye!");
+                        }
+                    });
+                    //Call here the requestCancelation to stop nicely the listen action
+                    listen_result_future.requestCancellation();
                     animation_future = goodbye_animation.async().run();
                     // A new user comes by - restart scenario
                     animation_future.andThenConsume(restart -> {
@@ -146,16 +165,15 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         goodbye_animation = AnimateBuilder.with(qiContext).withAnimation(goodbyeAnimationObject).build();
         // As soon as the animation starts, Pepper says goodbye to the user
         goodbye_animation.addOnStartedListener(() -> {
-            Say goodbye = SayBuilder.with(qiContext).withText("Bye!").build();
+            Say goodbye = SayBuilder.with(qiContext).withText("Have a great day, bye!").build();
             goodbye.async().run();
         });
     }
 
     private void initUiElements() {
-        final TextView textView = (TextView) findViewById(R.id.textView2);
+        textView = (TextView) findViewById(R.id.textView1);
 
-        final Button button_yes = findViewById(R.id.button_yes);
-        button_yes.setOnClickListener(v -> {
+        buttonYes.setOnClickListener(v -> {
             // Stop listening
             if (listen_result_future != null) {
                 listen_result_future.requestCancellation();
@@ -166,16 +184,15 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
             startActivity(changeActivity);
         });
 
-        final Button button_no = findViewById(R.id.button_no);
-        button_no.setOnClickListener(v -> {
+        buttonNo.setOnClickListener(v -> {
             // Stop listening
             if (listen_result_future != null) {
                 listen_result_future.requestCancellation();
             }
 
             // Hide the buttons and set the text
-            button_yes.setVisibility(View.GONE);
-            button_no.setVisibility(View.GONE);
+            buttonYes.setVisibility(View.GONE);
+            buttonNo.setVisibility(View.GONE);
             textView.setText("Bye!");
 
             // Help is refused - restart scenario
@@ -188,5 +205,4 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
             });
         });
     }
-
 }

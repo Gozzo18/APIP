@@ -168,7 +168,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
             if (future_chat != null) {
                 future_chat.requestCancellation();
             }
-            Future<Say> memorized = SayBuilder.with(qiContext).withText("Got it! Then focus pay attention to my movements and the tablet.").buildAsync();
+            Future<Say> memorized = SayBuilder.with(qiContext).withText("Got it! Then pay attention to my movements and the tablet.").buildAsync();
             memorized.andThenConsume(gotIt->{
                 gotIt.async().run();
                 Intent changeActivity = new Intent(this, Information.class);
