@@ -22,12 +22,10 @@ import com.aldebaran.qi.sdk.builder.QiChatbotBuilder;
 import com.aldebaran.qi.sdk.builder.SayBuilder;
 import com.aldebaran.qi.sdk.builder.TopicBuilder;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
-import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy;
 import com.aldebaran.qi.sdk.object.actuation.Animate;
 import com.aldebaran.qi.sdk.object.actuation.Animation;
 import com.aldebaran.qi.sdk.object.conversation.Chat;
-import com.aldebaran.qi.sdk.object.conversation.QiChatVariable;
 import com.aldebaran.qi.sdk.object.conversation.QiChatbot;
 import com.aldebaran.qi.sdk.object.conversation.Say;
 import com.aldebaran.qi.sdk.object.conversation.Topic;
@@ -45,7 +43,6 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     private GlobalVariables globalVariables;
 
     private QiChatbot information_chatBot;
-    public QiChatVariable information_type;
     private Chat information_chat;
     public Future<Void> future_chat;
 
@@ -60,11 +57,17 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         globalVariables = (GlobalVariables) getIntent().getSerializableExtra("globalVariables");
-        //Set type and position of speechbar https://android.aldebaran.com/sdk/doc/pepper-sdk/ch4_api/conversation/conversation_feedbacks.html
+
+        // Set the type of the speechBar
         setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.OVERLAY);
-        setSpeechBarDisplayPosition(SpeechBarDisplayPosition.TOP);
-        //Set the current layout view to activity_main.xml
-        setContentView(R.layout.activity_information);
+
+        // Set the current layout view
+        if (globalVariables.getVisuallyImpaired()) {
+            setContentView(R.layout.activity_information_XL);
+        } else {
+            setContentView(R.layout.activity_information);
+        }
+
         QiSDK.register(this, this);
     }
 
