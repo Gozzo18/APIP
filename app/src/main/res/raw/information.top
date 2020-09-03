@@ -1,0 +1,19 @@
+topic: ~small_talk()
+
+# Defining extra concepts out of words or group of words
+concept:(time) [time hour date day]
+concept:(weather) [weather temperature rain sun cloud wind sunny cloudy raining windy rainy]
+concept:(humor) [pun puns joke jokes laugh]
+concept:(directions) [where go direction directions "How do I get to" "Where is" "How far"]
+concept:(bye) [Goodbye Bye "Bye bye" "See you" "Don't need help anymore" Terminate Finish Stop]
+
+# Replying to speech
+u:(~time) ^currentDateTime
+u:(~humor) ^rand["Joke 1"
+                 "Joke 2"
+                 "Joke 3"
+                 "Joke 4"
+                 "Joke 5"]
+u:(~weather) ^rand["It's cloudy" "It's sunny" "It's raining" "It's windy"]
+u:(~directions) ["Where would you like to go?"] ^endDiscuss (directions)
+u:(~bye) ^endDiscuss (bye)

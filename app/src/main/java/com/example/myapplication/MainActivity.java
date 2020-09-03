@@ -49,7 +49,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Set the type of the speechbar
+        // Set the type of the speechBar
         setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.OVERLAY);
 
         // Set the current layout view to activity_main.xml
@@ -58,7 +58,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         // Register the RobotLifecycleCallbacks for this activity
         QiSDK.register(this, this);
 
-        //Retrieve a reference to Ui elements
+        // Retrieve a reference to Ui elements
         textView = findViewById(R.id.textView1);
         buttonNo =  findViewById(R.id.button_no);
         buttonYes =  findViewById(R.id.button_yes);
@@ -82,7 +82,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         // Create the sets of words to look for in user's answer
         PhraseSet phrase_set_yes = PhraseSetBuilder.with(qiContext).withTexts("Yes", "Yea", "Yup", "Yeah", "Ok").build();
         PhraseSet phrase_set_no = PhraseSetBuilder.with(qiContext).withTexts("No", "Nope", "Nah", "Nada").build();
-        PhraseSet phrase_set_bye = PhraseSetBuilder.with(qiContext).withTexts("Goodbye", "Bye", "Bye bye", "See you").build();
+        PhraseSet phrase_set_bye = PhraseSetBuilder.with(qiContext).withTexts("Goodbye", "Bye", "Bye bye", "See you", "Don't need help anymore", "Terminate", "Finish", "Stop").build();
 
         // Build the listen action
         Listen listen = ListenBuilder.with(qiContext).withPhraseSets(phrase_set_yes, phrase_set_no, phrase_set_bye).build();
@@ -119,7 +119,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
                             textView.setText("Bye bye!");
                         }
                     });
-                    //Call here the requestCancelation to stop nicely the listen action
+                    //Call here the requestCancellation to stop nicely the listen action
                     listen_result_future.requestCancellation();
                     animation_future = goodbye_animation.async().run();
                     // A new user comes by - restart scenario
@@ -165,13 +165,13 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         goodbye_animation = AnimateBuilder.with(qiContext).withAnimation(goodbyeAnimationObject).build();
         // As soon as the animation starts, Pepper says goodbye to the user
         goodbye_animation.addOnStartedListener(() -> {
-            Say goodbye = SayBuilder.with(qiContext).withText("Have a great day, bye!").build();
+            Say goodbye = SayBuilder.with(qiContext).withText("Bye bye!").build();
             goodbye.async().run();
         });
     }
 
     private void initUiElements() {
-        textView = (TextView) findViewById(R.id.textView1);
+        textView = findViewById(R.id.textView1);
 
         buttonYes.setOnClickListener(v -> {
             // Stop listening
@@ -193,15 +193,14 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
             // Hide the buttons and set the text
             buttonYes.setVisibility(View.GONE);
             buttonNo.setVisibility(View.GONE);
-            textView.setText("Bye!");
+            textView.setText("Bye bye!");
 
             // Help is refused - restart scenario
             animation_future = goodbye_animation.async().run();
             animation_future.andThenConsume(restart -> {
                 Log.i(TAG, "Interaction ended. Restarting.");
                 //Restart by starting this same activity
-                Intent changeActivity = new Intent(this, MainActivity.class);
-                startActivity(changeActivity);
+                startActivity(new Intent(this, MainActivity.class));
             });
         });
     }

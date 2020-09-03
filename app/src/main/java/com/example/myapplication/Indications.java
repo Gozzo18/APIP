@@ -96,61 +96,58 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
             if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketA)) {
                 runOnUiThread(new Runnable() {
                     @Override
-                    public void run() {
-                        marketButtonA.performClick();
-                    }
+                    public void run() { marketButtonA.performClick(); }
                 });
-            }else if(PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketB)){
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketB)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         marketButtonB.performClick();
                     }
                 });
-            }else if(PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketC)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketC)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         marketButtonC.performClick();
                     }
                 });
-            }else if(PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketD)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketD)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         marketButtonD.performClick();
                     }
                 });
-            }else if(PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketE)){
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketE)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         marketButtonE.performClick();
                     }
                 });
-            }else if(PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketF)){
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketF)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         marketButtonF.performClick();
                     }
                 });
-            }else if(PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketG)){
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketG)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         marketButtonG.performClick();
                     }
                 });
-            }else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), endInteraction)){
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), endInteraction)) {
                 listen_result_future.requestCancellation();
                 goodbyeAnimationFuture = goodbyeAnimation.async().run();
                 goodbyeAnimationFuture.andThenConsume(finished->{
                     Intent changeActivity = new Intent(this, MainActivity.class);
-                    changeActivity.putExtra("globalVariables", globalVariables);
                     startActivity(changeActivity);
                 });
-            }else if(PhraseSetUtil.equals(result.getMatchedPhraseSet(), goBack)){
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), goBack)) {
                 listen_result_future.requestCancellation();
                 Intent changeActivity = new Intent(this, Information.class);
                 changeActivity.putExtra("globalVariables", globalVariables);
@@ -197,8 +194,8 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
                 }
                 Future<Say> direction = SayBuilder.with(qiContext).withText("GAP is very close to where we are! Proceed straight ahead for 100 meters and you will find the entrance on your right.").buildAsync();
                 //Double call is required otherwise the Say action is not displayed and the Listen can not be re-launched
-                direction.andThenConsume(directionGiven->{
-                    directionGiven.async().run().andThenConsume(finished->{
+                direction.andThenConsume(directionGiven -> {
+                    directionGiven.async().run().andThenConsume(finished -> {
                         if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) {
                             manyIndications();
                         }

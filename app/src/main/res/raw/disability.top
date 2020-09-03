@@ -7,6 +7,7 @@ concept:(color_blind) ["color blind" daltonism "colorblindness"]
 concept:(visually_impaired) ["visually impaired"]
 concept:(visual_disability) ["visual problems" "visual issues" visual "see little"]
 concept:(no) [No Nope Nah Nada]
+concept:(bye) [Goodbye Bye "Bye bye" "See you" "Don't need help anymore" Terminate Finish Stop]
 
 # Replying to speech
 u:(~blindness) $disability_type=blind
@@ -14,7 +15,7 @@ u:(~deafness) $disability_type=deaf
 u:(~color_blind) $disability_type=colorBlind
 u:(~visually_impaired) $disability_type=visuallyImpaired
 u:(~no) $disability_type=no
+u:(~bye) ^endDiscuss (bye)
 u:(~visual_disability) Can you be more specific? ^stayInScope
-    #Directly set the disability_type variable to predefined values (?)
     u1:(["color blind" daltonism "colorblindness"]) $disability_type=colorblind
     u1:(["visually impaired"]) $disability_type=visuallyImpaired

@@ -16,7 +16,6 @@ import java.util.Locale;
 
 public class Weather {
 
-
     private static final String OPEN_WEATHER_MAP_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric";
     private static final String OPEN_WEATHER_MAP_API = "e87c0c88271a75ab5db6292a3c0cebb9";
 

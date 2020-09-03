@@ -44,6 +44,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
 
 
     private Animate affirmationAnimation;
+    private Animate goodbye_animation;
     private Future<Void> affirmationAnimationF;
 
     private Animate gotItAnimation;
@@ -53,12 +54,16 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get the global variables
         globalVariables = (GlobalVariables) getIntent().getSerializableExtra("globalVariables");
-        //Set type and position of speechbar https://android.aldebaran.com/sdk/doc/pepper-sdk/ch4_api/conversation/conversation_feedbacks.html
+
+        // Set the type of the speechBar
         setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.OVERLAY);
-        setSpeechBarDisplayPosition(SpeechBarDisplayPosition.TOP);
+
         //Set the current layout view to activity_main.xml
         setContentView(R.layout.activity_disability);
+
         QiSDK.register(this, this);
     }
 
@@ -114,7 +119,6 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
 
     @Override
     public void onRobotFocusLost() {
-
         if (disability_chat != null) {
             disability_chat.removeAllOnStartedListeners();
         }
@@ -122,17 +126,18 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
         if (disability_type != null) {
             disability_type.removeAllOnValueChangedListeners();
         }
-        if(affirmationAnimation != null){
+        if (affirmationAnimation != null) {
             affirmationAnimation.removeAllOnStartedListeners();
         }
     }
 
     @Override
     public void onRobotFocusRefused(String reason) {
+
     }
 
-    private void initAnimation(){
-
+    private void initAnimation() {
+        // Affirmation animation
         Animation affirmationAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a007).build();
         affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(affirmationAnimationObject).build();
         affirmationAnimation.addOnStartedListener(()->{
@@ -143,30 +148,37 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
             future_chat = disability_chat.async().run();
         });
 
+        // Build the goodbye animation
+        Animation goodbyeAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.goodbye).build();
+        goodbye_animation = AnimateBuilder.with(qiContext).withAnimation(goodbyeAnimationObject).build();
+        goodbye_animation.addOnStartedListener(() -> {
+            Say goodbye = SayBuilder.with(qiContext).withText("Bye bye!").build();
+            goodbye.async().run();
+        });
+
         Animation gotItAnimationObject =  AnimationBuilder.with(qiContext).withResources(R.raw.left_hand_low_b001).build();
         gotItAnimation = AnimateBuilder.with(qiContext).withAnimation(gotItAnimationObject).build();
         gotItAnimation.addOnStartedListener(()->{
-            if (globalVariables.getMute()){
+            if (globalVariables.getMute()) {
                 Say gotIt = SayBuilder.with(qiContext).withText("Got it! Then pay attention to my movements and the tablet.").build();
                 gotIt.run();
-            }else if (globalVariables.getColorBlind()){
+            } else if (globalVariables.getColorBlind()) {
                 Say gotIt = SayBuilder.with(qiContext).withText("Colors will not be a problem! Every UI element will be easily distinguishable.").build();
                 gotIt.run();
-            }else if (globalVariables.getVisuallyImpaired()){
-                Say gotIt = SayBuilder.with(qiContext).withText("The font size should be big enough, but you can still user your voice to communicate with me!.").build();
+            } else if (globalVariables.getVisuallyImpaired()) {
+                Say gotIt = SayBuilder.with(qiContext).withText("Ok, I'll make the text and buttons bigger.").build();
                 gotIt.run();
-            }else if(globalVariables.getBlind()){
-                Say gotIt = SayBuilder.with(qiContext).withText("Ok, then pay attention to my voice!").build();
+            } else if(globalVariables.getBlind()) {
+                Say gotIt = SayBuilder.with(qiContext).withText("Ok, then pay attention to my voice.").build();
                 gotIt.run();
-            }else if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()){
-                Say gotIt = SayBuilder.with(qiContext).withText("Fine, both touch and voice inputs are enabled!").build();
+            } else if (!globalVariables.getDeaf()) {
+                Say gotIt = SayBuilder.with(qiContext).withText("Fine, both touch and voice inputs are enabled.").build();
                 gotIt.run();
             }
         });
     }
 
     private void initChat() {
-
         Topic disability_topic = TopicBuilder.with(qiContext).withResource(R.raw.disability).build();
 
         disability_chatBot = QiChatbotBuilder.with(qiContext).withTopic(disability_topic).build();
@@ -176,15 +188,20 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
 
         disability_chatBot.addOnEndedListener(endReason -> {
             future_chat.requestCancellation();
-            Intent changeActivity = new Intent(this, Information.class);
-            changeActivity.putExtra("globalVariables", globalVariables);
-            startActivity(changeActivity);
+            if (endReason.equals("bye")) {
+                goodbye_animation.async().run().andThenConsume(restart -> {
+                    startActivity(new Intent(this, MainActivity.class));
+                });
+            } else {
+                Intent changeActivity = new Intent(this, Information.class);
+                changeActivity.putExtra("globalVariables", globalVariables);
+                startActivity(changeActivity);
+            }
         });
     }
 
     private void initUiElements() {
-
-        final TextView textView = (TextView) findViewById(R.id.textView2);
+        final TextView textView = findViewById(R.id.textView2);
         final Button button_mute = findViewById(R.id.button_mute);
         final Button button_blind = findViewById(R.id.button_blind);
         final Button button_deaf = findViewById(R.id.button_deaf);
@@ -246,7 +263,6 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 future_chat.requestCancellation();
             }
             globalVariables.setDeaf(true);
-            textView.setTextSize(40);
             textView.setText("All information will be displayed on the tablet!");
             gotItAnimationF = gotItAnimation.async().run();
             gotItAnimationF.andThenConsume(change-> {
