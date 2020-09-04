@@ -76,6 +76,8 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
         if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()){
             //If the user has no disability, use touch interactions and make Pepper also talk and listen
             manyIndications();
+        }else if (globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired() || globalVariables.getBlind()){
+            manyIndications();
         }
     }
 
@@ -196,7 +198,7 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
                 //Double call is required otherwise the Say action is not displayed and the Listen can not be re-launched
                 direction.andThenConsume(directionGiven -> {
                     directionGiven.async().run().andThenConsume(finished -> {
-                        if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) {
+                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
                             manyIndications();
                         }
                     });
@@ -218,7 +220,7 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
                 Future<Say> direction = SayBuilder.with(qiContext).withText("ZARA is exactly behind me! Proceed straight ahead for 25 meters and you will find the entrance on your right.").buildAsync();
                 direction.andThenConsume(directionGiven->{
                     directionGiven.async().run().andThenConsume(finished->{
-                        if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) {
+                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
                             manyIndications();
                         }
                     });
@@ -239,7 +241,7 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
                 Future<Say> direction = SayBuilder.with(qiContext).withText("Burger king is on our right! Proceed in that direction ahead for 70 meters and you will find the entrance on your right.").buildAsync();
                 direction.andThenConsume(directionGiven->{
                     directionGiven.async().run().andThenConsume(finished->{
-                        if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) {
+                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
                             manyIndications();
                         }
                     });
@@ -261,7 +263,7 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
                 Future<Say> direction = SayBuilder.with(qiContext).withText("BATA is on our left! Proceed in that direction ahead for 200 meters and you will find the entrance on your left.").buildAsync();
                 direction.andThenConsume(directionGiven->{
                     directionGiven.async().run().andThenConsume(finished->{
-                        if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) {
+                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
                             manyIndications();
                         }
                     });
@@ -284,7 +286,7 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
                 Future<Say> direction = SayBuilder.with(qiContext).withText("Old Wild West is on our left! Proceed in that direction ahead for 200 meters and you will find the entrance on your right.").buildAsync();
                 direction.andThenConsume(directionGiven->{
                     directionGiven.async().run().andThenConsume(finished->{
-                        if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) {
+                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
                             manyIndications();
                         }
                     });
@@ -307,7 +309,7 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
                 Future<Say> direction = SayBuilder.with(qiContext).withText("NIKE is exactly behind me! Proceed straight ahead for 25 meters and you will find the entrance on your left.").buildAsync();
                 direction.andThenConsume(directionGiven->{
                     directionGiven.async().run().andThenConsume(finished->{
-                        if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) {
+                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
                             manyIndications();
                         }
                     });
@@ -327,7 +329,7 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
                 Future<Say> direction = SayBuilder.with(qiContext).withText("LEVI's is very close to where we are! Proceed straight ahead for 100 meters and you will find the entrance on your left.").buildAsync();
                 direction.andThenConsume(directionGiven->{
                     directionGiven.async().run().andThenConsume(finished->{
-                        if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) {
+                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
                             manyIndications();
                         }
                     });

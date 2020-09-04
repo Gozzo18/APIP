@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="957dp"
+        android:layout_height="220dp"
         android:layout_marginTop="80dp"
         android:text="How can I help you?"
         android:textAlignment="center"
@@ -20,24 +20,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/weather_button"
-        android:layout_width="300dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="90dp"
-        android:background="@drawable/custom_button"
-        android:text="weather"
-        android:textColor="#FFFFFF"
-        android:textSize="45sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-    <Button
         android:id="@+id/humor_button"
         android:layout_width="300dp"
         android:layout_height="120dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="324dp"
         android:background="@drawable/custom_button"
         android:text="jokes"
         android:textColor="#FFFFFF"
@@ -45,13 +31,27 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/weather_button"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/weather_button"
+        android:layout_width="300dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="324dp"
+        android:background="@drawable/custom_button"
+        android:text="weather"
+        android:textColor="#FFFFFF"
+        android:textSize="45sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/indication_button"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/end_interaction"
         android:layout_width="300dp"
         android:layout_height="120dp"
-        android:layout_marginBottom="110dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/custom_button"
         android:text="Exit"
         android:textColor="#FFFFFF"
@@ -59,15 +59,15 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.184"
+        app:layout_constraintHorizontal_bias="0.443"
         app:layout_constraintStart_toEndOf="@+id/time_button" />
 
     <Button
         android:id="@+id/time_button"
         android:layout_width="300dp"
         android:layout_height="120dp"
-        android:layout_marginStart="172dp"
-        android:layout_marginBottom="110dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/custom_button"
         android:text="time"
         android:textColor="#FFFFFF"
@@ -80,15 +80,15 @@
         android:id="@+id/indication_button"
         android:layout_width="300dp"
         android:layout_height="120dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="324dp"
         android:background="@drawable/custom_button"
         android:text="directions"
         android:textColor="#FFFFFF"
         android:textSize="45sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:layout_width="431dp"

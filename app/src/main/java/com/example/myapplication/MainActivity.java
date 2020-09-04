@@ -165,7 +165,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         goodbye_animation = AnimateBuilder.with(qiContext).withAnimation(goodbyeAnimationObject).build();
         // As soon as the animation starts, Pepper says goodbye to the user
         goodbye_animation.addOnStartedListener(() -> {
-            Say goodbye = SayBuilder.with(qiContext).withText("Bye bye!").build();
+            Say goodbye = SayBuilder.with(qiContext).withText("Have a great day, bye!").build();
             goodbye.async().run();
         });
     }

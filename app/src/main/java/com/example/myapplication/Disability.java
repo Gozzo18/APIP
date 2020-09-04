@@ -152,7 +152,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
         Animation goodbyeAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.goodbye).build();
         goodbye_animation = AnimateBuilder.with(qiContext).withAnimation(goodbyeAnimationObject).build();
         goodbye_animation.addOnStartedListener(() -> {
-            Say goodbye = SayBuilder.with(qiContext).withText("Bye bye!").build();
+            Say goodbye = SayBuilder.with(qiContext).withText("Have a great day, bye!").build();
             goodbye.async().run();
         });
 
@@ -263,6 +263,7 @@ public class Disability extends RobotActivity implements RobotLifecycleCallbacks
                 future_chat.requestCancellation();
             }
             globalVariables.setDeaf(true);
+            textView.setTextSize(40);
             textView.setText("All information will be displayed on the tablet!");
             gotItAnimationF = gotItAnimation.async().run();
             gotItAnimationF.andThenConsume(change-> {
