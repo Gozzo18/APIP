@@ -6,22 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".Indications">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/mall_map"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="957dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="80dp"
+        android:text="Where do you wish to go?"
+        android:textAlignment="center"
+        android:textSize="60sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:src="@drawable/mall_map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Button
         android:id="@+id/terminate"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="16dp"
         android:width="100dp"
         android:height="100dp"
         android:background="@drawable/custom_button"
@@ -29,336 +41,153 @@
         android:textColor="@android:color/white"
         android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <Button
+        android:id="@+id/market_mediaworld"
+        android:layout_width="260dp"
+        android:layout_height="145dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/marketE"
-        android:layout_width="43dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="164dp"
-        android:layout_marginTop="348dp"
-        android:background="@drawable/round_button"
-        android:foreground="@drawable/ripple_effect"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/market_burger_king"
+        android:layout_width="273dp"
+        android:layout_height="143dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="180dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/marketA"
-        android:layout_width="43dp"
-        android:layout_height="27dp"
-        android:layout_marginTop="176dp"
-        android:layout_marginEnd="220dp"
-        android:background="@drawable/round_button"
-        android:foreground="@drawable/ripple_effect"
+        android:id="@+id/market_zara"
+        android:layout_width="162dp"
+        android:layout_height="144dp"
+        android:layout_marginTop="244dp"
+        android:layout_marginEnd="180dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/market_conad"
+        android:layout_width="326dp"
+        android:layout_height="144dp"
+        android:layout_marginTop="244dp"
+        android:layout_marginEnd="348dp"
+        android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/marketB"
-        android:layout_width="44dp"
-        android:layout_height="26dp"
-        android:layout_marginEnd="240dp"
-        android:layout_marginBottom="255dp"
-        android:background="@drawable/round_button"
-        android:foreground="@drawable/ripple_effect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:id="@+id/market_brico"
+        android:layout_width="276dp"
+        android:layout_height="144dp"
+        android:layout_marginTop="244dp"
+        android:layout_marginEnd="672dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/marketC"
-        android:layout_width="46dp"
-        android:layout_height="27dp"
-        android:layout_marginEnd="108dp"
-        android:layout_marginBottom="96dp"
-        android:background="@drawable/round_button"
-        android:foreground="@drawable/ripple_effect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/marketD"
-        android:layout_width="44dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="164dp"
-        android:layout_marginBottom="108dp"
-        android:background="@drawable/round_button"
-        android:foreground="@drawable/ripple_effect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/marketF"
-        android:layout_width="45dp"
-        android:layout_height="26dp"
-        android:layout_marginStart="197dp"
-        android:layout_marginEnd="432dp"
-        android:layout_marginBottom="176dp"
-        android:background="@drawable/round_button"
-        android:foreground="@drawable/ripple_effect"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/market_kiko"
+        android:layout_width="138dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="536dp"
+        android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.329"
-        app:layout_constraintStart_toEndOf="@+id/marketE"
-        app:layout_constraintTop_toBottomOf="@+id/marketG"
-        app:layout_constraintVertical_bias="0.743" />
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/marketG"
-        android:layout_width="43dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="432dp"
-        android:layout_marginTop="176dp"
-        android:background="@drawable/round_button"
-        android:foreground="@drawable/ripple_effect"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/market_globo"
+        android:layout_width="138dp"
+        android:layout_height="77dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="536dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <ImageView
-        android:id="@+id/initial_position"
-        android:layout_width="39dp"
-        android:layout_height="37dp"
-        android:layout_marginEnd="368dp"
-        android:background="@drawable/portrait"
-        android:src="@drawable/pepper_face"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        android:id="@+id/market_globo_direction"
+        android:layout_width="48dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="488dp"
+        android:src="@drawable/market_globo_arrow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.714" />
+        android:visibility="gone" />
 
-    <!--Directions towards market C-->
     <ImageView
-        android:id="@+id/marketC_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="400dp"
-        android:src="@drawable/arrow_right"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/initial_position"
+        android:id="@+id/market_kiko_direction"
+        android:layout_width="111dp"
+        android:layout_height="87dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="444dp"
+        android:src="@drawable/market_kiko_arrow"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.102" />
+        android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/marketC_direction2"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="400dp"
-        android:src="@drawable/arrow_right"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/marketC_direction1"
+        android:id="@+id/market_mediaworld_direction"
+        android:layout_width="295dp"
+        android:layout_height="119dp"
+        android:layout_marginTop="124dp"
+        android:layout_marginEnd="536dp"
+        android:src="@drawable/market_mediaworld_arrow"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.102" />
+        android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/marketC_direction3"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="400dp"
-        android:src="@drawable/arrow_right"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/marketC_direction2"
+        android:id="@+id/market_burger_king_direction"
+        android:layout_width="48dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="456dp"
+        android:src="@drawable/market_burger_king_arrow"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.102" />
+        android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/marketC_direction4"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="410dp"
-        android:src="@drawable/arrow_destination_down_right"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/marketC_direction3"
+        android:id="@+id/market_brico_direction"
+        android:layout_width="304dp"
+        android:layout_height="104dp"
+        android:layout_marginTop="168dp"
+        android:layout_marginEnd="528dp"
+        android:src="@drawable/market_brico_arrow"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.123" />
+        android:visibility="gone" />
 
-    <!--Directions toward market D and E-->
     <ImageView
-        android:id="@+id/marketDE_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginEnd="52dp"
-        android:src="@drawable/arrow_left"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/initial_position"
+        android:id="@+id/market_conad_direction"
+        android:layout_width="156dp"
+        android:layout_height="133dp"
+        android:layout_marginTop="156dp"
+        android:layout_marginEnd="500dp"
+        android:src="@drawable/market_conad_arrow"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.102" />
+        android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/marketDE_direction2"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginEnd="40dp"
-        android:src="@drawable/arrow_left"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/marketDE_direction1"
+        android:id="@+id/market_zara_direction"
+        android:layout_width="216dp"
+        android:layout_height="88dp"
+        android:layout_marginTop="175dp"
+        android:layout_marginEnd="248dp"
+        android:src="@drawable/market_zara_arrow"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.102" />
-
-    <ImageView
-        android:id="@+id/marketDE_direction3"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginEnd="40dp"
-        android:src="@drawable/arrow_left"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/marketDE_direction2"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.102" />
-
-    <ImageView
-        android:id="@+id/marketDE_direction4"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginEnd="40dp"
-        android:src="@drawable/arrow_left"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/marketDE_direction3"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.102" />
-
-    <ImageView
-        android:id="@+id/marketE_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginEnd="40dp"
-        android:src="@drawable/arrow_destination_up"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/marketDE_direction4"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.03" />
-
-    <ImageView
-        android:id="@+id/marketD_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginEnd="40dp"
-        android:src="@drawable/arrow_destination_down_left"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/marketDE_direction4"
-        app:layout_constraintStart_toStartOf="@+id/marketE_direction1"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.19" />
-
-    <!--Directions toward market F,B,G and A-->
-    <ImageView
-        android:id="@+id/marketFBGA_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginBottom="48dp"
-        android:src="@drawable/arrow_up"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/initial_position"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.602"
-        app:layout_constraintStart_toStartOf="@+id/imageView" />
-
-    <ImageView
-        android:id="@+id/marketF_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginBottom="44dp"
-        android:src="@drawable/arrow_destination_up_left"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/marketFBGA_direction1"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.581"
-        app:layout_constraintStart_toStartOf="@+id/imageView" />
-
-    <ImageView
-        android:id="@+id/marketB_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginBottom="44dp"
-        android:src="@drawable/arrow_destination_up_right"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/marketFBGA_direction1"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.64"
-        app:layout_constraintStart_toStartOf="@+id/imageView" />
-
-    <ImageView
-        android:id="@+id/marketGA_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginBottom="84dp"
-        android:src="@drawable/arrow_up"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/marketFBGA_direction1"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.611"
-        app:layout_constraintStart_toStartOf="@+id/imageView" />
-
-    <ImageView
-        android:id="@+id/marketGA_direction2"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginBottom="56dp"
-        android:src="@drawable/arrow_up"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/marketGA_direction1"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.627"
-        app:layout_constraintStart_toStartOf="@+id/imageView" />
-
-
-    <ImageView
-        android:id="@+id/marketA_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginBottom="56dp"
-        android:src="@drawable/arrow_destination_up_right"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/marketGA_direction2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.663"
-        app:layout_constraintStart_toStartOf="@+id/imageView" />
-
-    <ImageView
-        android:id="@+id/marketG_direction1"
-        android:tag="arrow"
-        android:layout_width="35dp"
-        android:layout_height="34dp"
-        android:layout_marginBottom="21dp"
-        android:src="@drawable/arrow_destination_up_left"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/marketGA_direction2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.61"
-        app:layout_constraintStart_toStartOf="@+id/imageView" />
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

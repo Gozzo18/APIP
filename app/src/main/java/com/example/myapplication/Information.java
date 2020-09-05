@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,13 +34,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 
 public class Information extends RobotActivity implements RobotLifecycleCallbacks {
 
-    private static final String TAG = "Information";
     private QiContext qiContext;
-
     private GlobalVariables globalVariables;
 
     private int previousRnd = -1;
@@ -54,19 +52,16 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
                                                         "What do you call an alligator with a vest? An investigator.",
                                                             "I would tell you a construction pun, but I’m still working on it.",
                                                                 "I went to buy some camouflage trousers the other day but I couldn’t find any."};
+
     private String currentWeather = "";
 
     private Animate tabletfocusAnimation;
     private Future<Void> tabletfocusAnimationFuture;
-
     public Animate goodbyeAnimation;
     public Future<Void> goodbyeAnimationFuture;
-
     private Animate affirmationAnimation;
-
     private Animate humorAnimation;
     private Future<Void> humorAnimationFuture;
-
     private Animate timeAnimation;
     private Future<Void> timeAnimationFuture;
 
@@ -79,6 +74,13 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     public Button weatherButton;
     public Button concludeInteraction;
     public ImageView weatherImage;
+
+    public PhraseSet indications;
+    public PhraseSet weather;
+    public PhraseSet humour;
+    public PhraseSet time;
+    public PhraseSet endInteraction;
+    public Listen listen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +99,6 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
             setContentView(R.layout.activity_information);
         }
 
-        QiSDK.register(this, this);
-
         timeButton = findViewById(R.id.time_button);
         indicationButton = findViewById(R.id.indication_button);
         humorButton = findViewById(R.id.humor_button);
@@ -108,6 +108,8 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         weatherImage = findViewById(R.id.weather_image);
 
         retrieveWeather();
+
+        QiSDK.register(this, this);
     }
 
     @Override
@@ -121,17 +123,27 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     public void onRobotFocusGained(QiContext qiContext) {
         this.qiContext = qiContext;
 
+        indications = PhraseSetBuilder.with(qiContext).withTexts("map", "direction", "directions", "shop", "shops").build();
+        weather = PhraseSetBuilder.with(qiContext).withTexts("weather", "outside", "sun", "cloud", "rain", "snow", "temperature").build();
+        humour = PhraseSetBuilder.with(qiContext).withTexts("joke", "jokes", "make me laugh", "want to laugh", "something funny", "funny jokes").build();
+        time = PhraseSetBuilder.with(qiContext).withTexts("time", "current time", "what time is it", "hour").build();
+        endInteraction = PhraseSetBuilder.with(qiContext).withTexts("Goodbye", "Bye", "Bye bye", "See you", "Don't need help anymore", "Terminate", "Finish", "Stop").build();
+        listen = ListenBuilder.with(qiContext).withPhraseSets(indications, weather, humour, time, endInteraction).build();
+
         initUiElements();
         initAnimations();
+
         affirmationAnimation.run();
     }
 
     @Override
     public void onRobotFocusLost() {
+        //
     }
 
     @Override
     public void onRobotFocusRefused(String reason) {
+        //
     }
 
     private void retrieveWeather(){
@@ -139,34 +151,25 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         Weather.placeIdTask asyncTask =new Weather.placeIdTask(new Weather.AsyncResponse() {
             public void processFinish(String weather_city, String weather_description, String weather_temperature, String weather_humidity, String weather_pressure, String weather_updatedOn) {
                 //We are interested only on the current weather, not on tempetarute, pressure and so on
-                String retrievedWeather = weather_description.substring(0,1).toUpperCase() + weather_description.substring(1);
-                currentWeather = retrievedWeather;
+                currentWeather = weather_description.substring(0,1).toUpperCase() + weather_description.substring(1);
             }
         });
-        //ROME "latitude" and "longitude"
+        // Rome "latitude" and "longitude"
         asyncTask.execute("41.89", "12.48");
     }
 
-    private void listen(){
-
-        PhraseSet indications = PhraseSetBuilder.with(qiContext).withTexts("map", "direction", "directions", "shops", "shop").build();
-        PhraseSet weather = PhraseSetBuilder.with(qiContext).withTexts("weather", "outside", "sun", "clouds", "rain", "raining", "snow", "snowing").build();
-        PhraseSet humour = PhraseSetBuilder.with(qiContext).withTexts("joke", "jokes", "make me laugh", "want to laugh", "something funny", "funny jokes").build();
-        PhraseSet time = PhraseSetBuilder.with(qiContext).withTexts("time", "current time", "what time is it").build();
-        PhraseSet endInteraction = PhraseSetBuilder.with(qiContext).withTexts("Goodbye", "Bye", "Bye bye", "See you", "Don't need help anymore", "Terminate", "Finish", "Stop").build();
-
-        Listen listen = ListenBuilder.with(qiContext).withPhraseSets(indications, weather, humour, time, endInteraction).build();
+    private void listen() {
         listen_result_future = listen.async().run();
-        listen_result_future.andThenConsume(result->{
+        listen_result_future.andThenConsume(result -> {
             if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), indications)) {
                 runOnUiThread(new Runnable() { @Override public void run() { indicationButton.performClick(); }});
-            }else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), weather)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), weather)) {
                 runOnUiThread(new Runnable() { @Override public void run() { weatherButton.performClick(); }});
-            }else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), humour)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), humour)) {
                 runOnUiThread(new Runnable() { @Override public void run() { humorButton.performClick(); }});
-            }else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), time)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), time)) {
                 runOnUiThread(new Runnable() { @Override public void run() { timeButton.performClick(); }});
-            }else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), endInteraction)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), endInteraction)) {
                 listen_result_future.requestCancellation();
                 goodbyeAnimationFuture = goodbyeAnimation.async().run();
                 goodbyeAnimationFuture.andThenConsume(finished->{
@@ -178,9 +181,8 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
     }
 
     private void initUiElements() {
-
-        timeButton.setOnClickListener(v->{
-            if (listen_result_future != null){
+        timeButton.setOnClickListener(v -> {
+            if (listen_result_future != null) {
                 listen_result_future.requestCancellation();
             }
             //Firstly launch the animation
@@ -201,13 +203,13 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
                             listen();
                         }
                     });
-                }else{
+                } else {
                     runOnUiThread(new Runnable() {@Override public void run() { textView.setText("It's " + currentTime); }});
                 }
             });
         });
 
-        humorButton.setOnClickListener(v->{
+        humorButton.setOnClickListener(v -> {
             if (listen_result_future != null){
                 listen_result_future.requestCancellation();
             }
@@ -224,10 +226,6 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
             if (listen_result_future != null){
                 listen_result_future.requestCancellation();
             }
-            if (globalVariables.getDeaf()) {
-                textView.setText("Where do you wish to go?");
-            }
-
             tabletfocusAnimationFuture = tabletfocusAnimation.async().run();
             tabletfocusAnimationFuture.andThenConsume(change->{
                 Intent changeActivity = new Intent(this, Indications.class);
@@ -240,7 +238,7 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
             if (listen_result_future != null){
                 listen_result_future.requestCancellation();
             }
-            //CHange appeareance of UI
+            // Change appeareance of UI
             textView.setText(currentWeather);
             fadeOutButton(timeButton);
             fadeOutButton(indicationButton);
@@ -273,7 +271,7 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
                 switch (currentWeather){
                     case "Few clouds":
                     case "Scattered clouds":
-                        weatherMessage = "There are very few clouds otuside, you won't need an umbrella";
+                        weatherMessage = "There are very few clouds otuside, you won't need an umbrella.";
                         break;
                     case "Clear sky":
                         weatherMessage = "The sun is shining outside, I love the sun.";
@@ -286,14 +284,14 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
                         weatherMessage = "At the moment is raining, better stay inside and wait for the rain to stop.";
                         break;
                 }
-                    Future<Say> tellWeather = SayBuilder.with(qiContext).withText(weatherMessage).buildAsync();
-                    tellWeather.andThenConsume(sayAction->{
-                        sayAction.async().run().andThenConsume(finished->{
-                            if (!globalVariables.getMute()) {
-                                listen();
-                            }
-                        });
+                Future<Say> tellWeather = SayBuilder.with(qiContext).withText(weatherMessage).buildAsync();
+                tellWeather.andThenConsume(sayAction->{
+                    sayAction.async().run().andThenConsume(finished->{
+                        if (!globalVariables.getMute()) {
+                            listen();
+                        }
                     });
+                });
             }
 
             Handler handler = new Handler();
@@ -344,25 +342,17 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         affirmationAnimation.addOnStartedListener(()->{
             if (!globalVariables.getDeaf()){
                 Future<Say> askInformation = SayBuilder.with(qiContext).withText("How can I help you?").buildAsync();
-                askInformation.andThenConsume(say->{
-                    if (!globalVariables.getMute()){
+                askInformation.andThenConsume(say -> say.async().run().andThenConsume(consume -> {
+                    if (!globalVariables.getMute()) {
                         listen();
                     }
-                });
+                }));
             }
         });
 
         // Tablet focus animation
         Animation tabletfocusAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a004).build();
         tabletfocusAnimation = AnimateBuilder.with(qiContext).withAnimation(tabletfocusAnimationObject).build();
-        if (!globalVariables.getDeaf()){
-            tabletfocusAnimation.addOnStartedListener(()->{
-                if (!globalVariables.getDeaf()) {
-                    Say where = SayBuilder.with(qiContext).withText("Where do you wish to go?").build();
-                    where.run();
-                }
-            });
-        }
 
         Animation humorAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a002).build();
         humorAnimation = AnimateBuilder.with(qiContext).withAnimation(humorAnimationObject).build();
@@ -390,31 +380,24 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         timeAnimation = AnimateBuilder.with(qiContext).withAnimation(timeAnimationObject).build();
     }
 
-    //region Animation methods
+
+
     private void fadeOutButton(Button b) {
-        b.animate()
-                .alpha(0f) //Button becomes transparent
-                .setDuration(0) //Set the length of the animation
-                .setListener(new AnimatorListenerAdapter() {
-                    //When the animation ends, make the button disappear
+        b.animate().alpha(0f).setDuration(0).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         b.setVisibility(View.GONE);
                     }
-                });
+        });
     }
 
     private void fadeInButton(Button b) {
-        b.animate()
-                .alpha(1f) //Button becomes transparent
-                .setDuration(100) //Set the length of the animation
-                .setListener(new AnimatorListenerAdapter() {
-                    //When the animation ends, make the button disappear
+        b.animate().alpha(1f).setDuration(0).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         b.setVisibility(View.VISIBLE);
                     }
-                });
+        });
     }
-    //endregion
+
 }

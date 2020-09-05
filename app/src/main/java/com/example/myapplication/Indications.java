@@ -19,7 +19,6 @@ import com.aldebaran.qi.sdk.builder.ListenBuilder;
 import com.aldebaran.qi.sdk.builder.PhraseSetBuilder;
 import com.aldebaran.qi.sdk.builder.SayBuilder;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
-import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition;
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy;
 import com.aldebaran.qi.sdk.object.actuation.Animate;
 import com.aldebaran.qi.sdk.object.actuation.Animation;
@@ -40,106 +39,131 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
     public Animate goodbyeAnimation;
     public Future<Void> goodbyeAnimationFuture;
 
-    public Button marketButtonA;
-    public Button marketButtonB;
-    public Button marketButtonC;
-    public Button marketButtonD;
-    public Button marketButtonE;
-    public Button marketButtonF;
-    public Button marketButtonG;
+    public Button marketButton_Burger_King;
+    public Button marketButton_Zara;
+    public Button marketButton_Conad;
+    public Button marketButton_Brico;
+    public Button marketButton_Mediaworld;
+    public Button marketButton_KIKO;
+    public Button marketButton_Globo;
     public Button terminate;
+
+    public PhraseSet phrase_set_Burger_King;
+    public PhraseSet phrase_set_Zara;
+    public PhraseSet phrase_set_Conad;
+    public PhraseSet phrase_set_Brico;
+    public PhraseSet phrase_set_Mediaworld;
+    public PhraseSet phrase_set_KIKO;
+    public PhraseSet phrase_set_Globo;
+    public PhraseSet endInteraction;
+    public PhraseSet goBack;
+
+    private ImageView brico_imageview;
+    private ImageView burger_king_imageview;
+    private ImageView conad_imageview;
+    private ImageView globo_imageview;
+    private ImageView kiko_imageview;
+    private ImageView mediaworld_imageview;
+    private ImageView zara_imageview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         globalVariables = (GlobalVariables) getIntent().getSerializableExtra("globalVariables");
         setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.OVERLAY);
-        setSpeechBarDisplayPosition(SpeechBarDisplayPosition.BOTTOM);
         setContentView(R.layout.activity_indications);
         QiSDK.register(this, this);
 
-        marketButtonA = findViewById(R.id.marketA);
-        marketButtonB = findViewById(R.id.marketB);
-        marketButtonC = findViewById(R.id.marketC);
-        marketButtonD = findViewById(R.id.marketD);
-        marketButtonE = findViewById(R.id.marketE);
-        marketButtonF = findViewById(R.id.marketF);
-        marketButtonG = findViewById(R.id.marketG);
+        marketButton_Burger_King = findViewById(R.id.market_burger_king);
+        marketButton_Zara = findViewById(R.id.market_zara);
+        marketButton_Conad = findViewById(R.id.market_conad);
+        marketButton_Brico = findViewById(R.id.market_brico);
+        marketButton_Mediaworld = findViewById(R.id.market_mediaworld);
+        marketButton_KIKO = findViewById(R.id.market_kiko);
+        marketButton_Globo = findViewById(R.id.market_globo);
         terminate = findViewById(R.id.terminate);
+
+        brico_imageview = findViewById(R.id.market_brico_direction);
+        burger_king_imageview = findViewById(R.id.market_burger_king_direction);
+        conad_imageview = findViewById(R.id.market_conad_direction);
+        globo_imageview = findViewById(R.id.market_globo_direction);
+        kiko_imageview = findViewById(R.id.market_kiko_direction);
+        mediaworld_imageview = findViewById(R.id.market_mediaworld_direction);
+        zara_imageview = findViewById(R.id.market_zara_direction);
+
         initUiElements();
     }
 
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
         this.qiContext = qiContext;
+
+        phrase_set_Burger_King = PhraseSetBuilder.with(qiContext).withTexts("hamburger", "Burger King", "fast food").build();
+        phrase_set_Zara = PhraseSetBuilder.with(qiContext).withTexts("Zara", "clothes").build();
+        phrase_set_Conad = PhraseSetBuilder.with(qiContext).withTexts("Conad", "grocery").build();
+        phrase_set_Brico = PhraseSetBuilder.with(qiContext).withTexts("Brico", "bricolage", "DIY").build();
+        phrase_set_Mediaworld = PhraseSetBuilder.with(qiContext).withTexts("Mediaworld", "technology", "smartphone").build();
+        phrase_set_KIKO = PhraseSetBuilder.with(qiContext).withTexts("KIKO", "make up").build();
+        phrase_set_Globo = PhraseSetBuilder.with(qiContext).withTexts("Globo", "sneakers", "shoes").build();
+        endInteraction = PhraseSetBuilder.with(qiContext).withTexts("Goodbye", "Bye", "Bye bye", "See you", "Don't need help anymore", "Terminate", "Finish", "Stop").build();
+        goBack = PhraseSetBuilder.with(qiContext).withTexts("Go back", "Previous", "Something else").build();
+
         initTerminateInteraction();
-        if (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()){
-            //If the user has no disability, use touch interactions and make Pepper also talk and listen
-            manyIndications();
-        }else if (globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired() || globalVariables.getBlind()){
-            manyIndications();
+
+        if (!globalVariables.getMute()) {
+            indications();
         }
     }
 
-    private void manyIndications(){
-        PhraseSet marketA = PhraseSetBuilder.with(qiContext).withTexts("market a", "shop a", "gap").build();
-        PhraseSet marketB = PhraseSetBuilder.with(qiContext).withTexts("market b", "shop b", "zara").build();
-        PhraseSet marketC = PhraseSetBuilder.with(qiContext).withTexts("market c", "shop c", "burger king").build();
-        PhraseSet marketD = PhraseSetBuilder.with(qiContext).withTexts("market d", "shop d", "bata").build();
-        PhraseSet marketE = PhraseSetBuilder.with(qiContext).withTexts("market e", "shop e", "old wild west").build();
-        PhraseSet marketF = PhraseSetBuilder.with(qiContext).withTexts("market f", "shop f", "nike").build();
-        PhraseSet marketG = PhraseSetBuilder.with(qiContext).withTexts("market g", "shop g", "levi's", "levi").build();
-        PhraseSet endInteraction = PhraseSetBuilder.with(qiContext).withTexts("Goodbye", "Bye", "Bye bye", "See you", "Don't need help anymore", "Terminate", "Finish", "Stop").build();
-        PhraseSet goBack = PhraseSetBuilder.with(qiContext).withTexts("Go back", "Previous", "Something else").build();
-
-        Listen listen = ListenBuilder.with(qiContext).withPhraseSets(marketA, marketB, marketC, marketD, marketE, marketF, marketG, endInteraction, goBack).build();
+    private void indications() {
+        Listen listen = ListenBuilder.with(qiContext).withPhraseSets(phrase_set_Burger_King, phrase_set_Zara, phrase_set_Conad, phrase_set_Brico, phrase_set_Mediaworld, phrase_set_KIKO, phrase_set_Globo, endInteraction, goBack).build();
         listen_result_future = listen.async().run();
-        listen_result_future.andThenConsume(result->{
-            if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketA)) {
+        listen_result_future.andThenConsume(result -> {
+            if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_Burger_King)) {
                 runOnUiThread(new Runnable() {
                     @Override
-                    public void run() { marketButtonA.performClick(); }
+                    public void run() { marketButton_Burger_King.performClick(); }
                 });
-            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketB)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_Zara)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        marketButtonB.performClick();
+                        marketButton_Zara.performClick();
                     }
                 });
-            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketC)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_Conad)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        marketButtonC.performClick();
+                        marketButton_Conad.performClick();
                     }
                 });
-            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketD)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_Brico)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        marketButtonD.performClick();
+                        marketButton_Brico.performClick();
                     }
                 });
-            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketE)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_Mediaworld)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        marketButtonE.performClick();
+                        marketButton_Mediaworld.performClick();
                     }
                 });
-            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketF)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_KIKO)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        marketButtonF.performClick();
+                        marketButton_KIKO.performClick();
                     }
                 });
-            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), marketG)) {
+            } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), phrase_set_Globo)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        marketButtonG.performClick();
+                        marketButton_Globo.performClick();
                     }
                 });
             } else if (PhraseSetUtil.equals(result.getMatchedPhraseSet(), endInteraction)) {
@@ -160,12 +184,12 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
 
     @Override
     public void onRobotFocusLost() {
-
+        //
     }
 
     @Override
     public void onRobotFocusRefused(String reason) {
-
+        //
     }
 
     private void initTerminateInteraction(){
@@ -187,178 +211,150 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
             startActivity(changeActivity);
         });
 
-        marketButtonA.setOnClickListener(v -> {
-            Log.i(TAG, "Market A selected");
-            if (!globalVariables.getDeaf()){
-                //First check if the listen action is running
-                if (listen_result_future != null){
-                    listen_result_future.requestCancellation();
-                }
-                Future<Say> direction = SayBuilder.with(qiContext).withText("GAP is very close to where we are! Proceed straight ahead for 100 meters and you will find the entrance on your right.").buildAsync();
-                //Double call is required otherwise the Say action is not displayed and the Listen can not be re-launched
-                direction.andThenConsume(directionGiven -> {
-                    directionGiven.async().run().andThenConsume(finished -> {
-                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
-                            manyIndications();
-                        }
-                    });
-                });
+        marketButton_Burger_King.setOnClickListener(v -> {
+            Log.i(TAG, "Burger King selected");
+            hideAllArrows();
+            burger_king_imageview.setVisibility(View.VISIBLE);
+
+            if (listen_result_future != null) {
+                listen_result_future.requestCancellation();
             }
-            fadeInImage((findViewById((R.id.marketFBGA_direction1))));
-            fadeInImage((findViewById((R.id.marketGA_direction1))));
-            fadeInImage((findViewById((R.id.marketGA_direction2))));
-            fadeInImage((findViewById((R.id.marketA_direction1))));
+
+            Future<Say> direction = SayBuilder.with(qiContext).withText("Burger King is right in front of you! Proceed 25 meters and you will find the entrance on your right.").buildAsync();
+            direction.andThenConsume(directionGiven -> {
+                directionGiven.async().run().andThenConsume(finished -> {
+                    if (!globalVariables.getMute()) {
+                        indications();
+                    }
+                });
+            });
         });
 
-        marketButtonB.setOnClickListener(v->{
-            Log.i(TAG, "Market B selected");
-            if (!globalVariables.getDeaf()){
-                //First check if the listen action is running
-                if (listen_result_future != null){
-                    listen_result_future.requestCancellation();
-                }
-                Future<Say> direction = SayBuilder.with(qiContext).withText("ZARA is exactly behind me! Proceed straight ahead for 25 meters and you will find the entrance on your right.").buildAsync();
-                direction.andThenConsume(directionGiven->{
-                    directionGiven.async().run().andThenConsume(finished->{
-                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
-                            manyIndications();
-                        }
-                    });
-                });
+        marketButton_Zara.setOnClickListener(v->{
+            Log.i(TAG, "Zara selected");
+            hideAllArrows();
+            zara_imageview.setVisibility(View.VISIBLE);
+
+            if (listen_result_future != null) {
+                listen_result_future.requestCancellation();
             }
-            fadeInImage((findViewById((R.id.marketFBGA_direction1))));
-            fadeInImage((findViewById((R.id.marketB_direction1))));
+
+            Future<Say> direction = SayBuilder.with(qiContext).withText("Zara is on your right! Proceed for 50 meters and you will find the entrance on your right.").buildAsync();
+            direction.andThenConsume(directionGiven -> {
+                directionGiven.async().run().andThenConsume(finished -> {
+                    if (!globalVariables.getMute()) {
+                        indications();
+                    }
+                });
+            });
         });
 
 
-        marketButtonC.setOnClickListener(v->{
-            Log.i(TAG, "Market C selected");
-            if (!globalVariables.getDeaf()){
-                //First check if the listen action is running
-                if (listen_result_future != null){
-                    listen_result_future.requestCancellation();
-                }
-                Future<Say> direction = SayBuilder.with(qiContext).withText("Burger king is on our right! Proceed in that direction ahead for 70 meters and you will find the entrance on your right.").buildAsync();
-                direction.andThenConsume(directionGiven->{
-                    directionGiven.async().run().andThenConsume(finished->{
-                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
-                            manyIndications();
-                        }
-                    });
-                });
+        marketButton_Conad.setOnClickListener(v->{
+            Log.i(TAG, "Conad selected");
+            hideAllArrows();
+            conad_imageview.setVisibility(View.VISIBLE);
+
+            if (listen_result_future != null) {
+                listen_result_future.requestCancellation();
             }
-            fadeInImage((findViewById((R.id.marketC_direction1))));
-            fadeInImage((findViewById((R.id.marketC_direction2))));
-            fadeInImage((findViewById((R.id.marketC_direction3))));
-            fadeInImage((findViewById((R.id.marketC_direction4))));
+
+            Future<Say> direction = SayBuilder.with(qiContext).withText("Conad is right behind you! The entrance is on your left, proceeding 40 meters.").buildAsync();
+            direction.andThenConsume(directionGiven -> {
+                directionGiven.async().run().andThenConsume(finished -> {
+                    if (!globalVariables.getMute()) {
+                        indications();
+                    }
+                });
+            });
         });
 
-        marketButtonD.setOnClickListener(v -> {
-            Log.i(TAG, "Market D selected");
-            if (!globalVariables.getDeaf()){
-                //First check if the listen action is running
-                if (listen_result_future != null){
-                    listen_result_future.requestCancellation();
-                }
-                Future<Say> direction = SayBuilder.with(qiContext).withText("BATA is on our left! Proceed in that direction ahead for 200 meters and you will find the entrance on your left.").buildAsync();
-                direction.andThenConsume(directionGiven->{
-                    directionGiven.async().run().andThenConsume(finished->{
-                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
-                            manyIndications();
-                        }
-                    });
-                });
+        marketButton_Brico.setOnClickListener(v -> {
+            Log.i(TAG, "Brico selected");
+            hideAllArrows();
+            brico_imageview.setVisibility(View.VISIBLE);
+
+            if (listen_result_future != null) {
+                listen_result_future.requestCancellation();
             }
-            fadeInImage((findViewById((R.id.marketD_direction1))));
-            fadeInImage((findViewById((R.id.marketDE_direction1))));
-            fadeInImage((findViewById((R.id.marketDE_direction2))));
-            fadeInImage((findViewById((R.id.marketDE_direction3))));
-            fadeInImage((findViewById((R.id.marketDE_direction4))));
+
+            Future<Say> direction = SayBuilder.with(qiContext).withText("Brico is on your left! Continue for 75 meters and you will find the entrance on your left.").buildAsync();
+            direction.andThenConsume(directionGiven -> {
+                directionGiven.async().run().andThenConsume(finished -> {
+                    if (!globalVariables.getMute()) {
+                        indications();
+                    }
+                });
+            });
         });
 
-        marketButtonE.setOnClickListener(v -> {
-            Log.i(TAG, "Market E selected");
-            if (!globalVariables.getDeaf()){
-                //First check if the listen action is running
-                if (listen_result_future != null){
-                    listen_result_future.requestCancellation();
-                }
-                Future<Say> direction = SayBuilder.with(qiContext).withText("Old Wild West is on our left! Proceed in that direction ahead for 200 meters and you will find the entrance on your right.").buildAsync();
-                direction.andThenConsume(directionGiven->{
-                    directionGiven.async().run().andThenConsume(finished->{
-                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
-                            manyIndications();
-                        }
-                    });
-                });
+        marketButton_Mediaworld.setOnClickListener(v -> {
+            Log.i(TAG, "Mediaworld selected");
+            hideAllArrows();
+            mediaworld_imageview.setVisibility(View.VISIBLE);
+
+            if (listen_result_future != null) {
+                listen_result_future.requestCancellation();
             }
-            fadeInImage((findViewById((R.id.marketDE_direction1))));
-            fadeInImage((findViewById((R.id.marketDE_direction2))));
-            fadeInImage((findViewById((R.id.marketDE_direction3))));
-            fadeInImage((findViewById((R.id.marketDE_direction4))));
-            fadeInImage((findViewById((R.id.marketE_direction1))));
+
+            Future<Say> direction = SayBuilder.with(qiContext).withText("Mediaworld is on your left! Continue for 75 meters and you will find the entrance on your right.").buildAsync();
+            direction.andThenConsume(directionGiven -> {
+                directionGiven.async().run().andThenConsume(finished -> {
+                    if (!globalVariables.getMute()) {
+                        indications();
+                    }
+                });
+            });
         });
 
-        marketButtonF.setOnClickListener(v->{
-            Log.i(TAG, "Market F selected");
-            if (!globalVariables.getDeaf()){
-                //First check if the listen action is running
-                if (listen_result_future != null){
-                    listen_result_future.requestCancellation();
-                }
-                Future<Say> direction = SayBuilder.with(qiContext).withText("NIKE is exactly behind me! Proceed straight ahead for 25 meters and you will find the entrance on your left.").buildAsync();
-                direction.andThenConsume(directionGiven->{
-                    directionGiven.async().run().andThenConsume(finished->{
-                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
-                            manyIndications();
-                        }
-                    });
-                });
+        marketButton_KIKO.setOnClickListener(v->{
+            Log.i(TAG, "KIKO selected");
+            hideAllArrows();
+            kiko_imageview.setVisibility(View.VISIBLE);
+
+            if (listen_result_future != null) {
+                listen_result_future.requestCancellation();
             }
-            fadeInImage((findViewById((R.id.marketFBGA_direction1))));
-            fadeInImage((findViewById((R.id.marketF_direction1))));
+
+            Future<Say> direction = SayBuilder.with(qiContext).withText("KIKO is right in front of you! Proceed 15 meters and you will find the entrance on your left.").buildAsync();
+            direction.andThenConsume(directionGiven -> {
+                directionGiven.async().run().andThenConsume(finished -> {
+                    if (!globalVariables.getMute()) {
+                        indications();
+                    }
+                });
+            });
         });
 
-        marketButtonG.setOnClickListener(v->{
-            Log.i(TAG, "Market G selected");
-            if (!globalVariables.getDeaf()){
-                //First check if the listen action is running
-                if (listen_result_future != null){
-                    listen_result_future.requestCancellation();
-                }
-                Future<Say> direction = SayBuilder.with(qiContext).withText("LEVI's is very close to where we are! Proceed straight ahead for 100 meters and you will find the entrance on your left.").buildAsync();
-                direction.andThenConsume(directionGiven->{
-                    directionGiven.async().run().andThenConsume(finished->{
-                        if ( (!globalVariables.getMute() & !globalVariables.getBlind() & !globalVariables.getColorBlind() & !globalVariables.getDeaf() & !globalVariables.getVisuallyImpaired()) || (globalVariables.getBlind() ||globalVariables.getColorBlind() || globalVariables.getVisuallyImpaired())) {
-                            manyIndications();
-                        }
-                    });
-                });
+        marketButton_Globo.setOnClickListener(v->{
+            Log.i(TAG, "Globo selected");
+            hideAllArrows();
+            globo_imageview.setVisibility(View.VISIBLE);
+
+            if (listen_result_future != null) {
+                listen_result_future.requestCancellation();
             }
-            fadeInImage((findViewById((R.id.marketFBGA_direction1))));
-            fadeInImage((findViewById((R.id.marketGA_direction2))));
-            fadeInImage((findViewById((R.id.marketGA_direction1))));
-            fadeInImage((findViewById((R.id.marketG_direction1))));
+
+            Future<Say> direction = SayBuilder.with(qiContext).withText("Globo is right in front of you! Proceed 35 meters and you will find the entrance on your left.").buildAsync();
+            direction.andThenConsume(directionGiven -> {
+                directionGiven.async().run().andThenConsume(finished -> {
+                    if (!globalVariables.getMute()) {
+                        indications();
+                    }
+                });
+            });
         });
 
     }
 
-    private void fadeInImage(ImageView im) {
-        im.animate().alpha(1f).setDuration(200).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        im.setVisibility(View.VISIBLE);
-                    }
-                });
-    }
-
-    private void fadeOutImage(ImageView im) {
-        im.animate().alpha(0f).setDuration(200).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        im.setVisibility(View.GONE);
-                    }
-                });
+    public void hideAllArrows() {
+        brico_imageview.setVisibility(View.GONE);
+        burger_king_imageview.setVisibility(View.GONE);
+        conad_imageview.setVisibility(View.GONE);
+        globo_imageview.setVisibility(View.GONE);
+        kiko_imageview.setVisibility(View.GONE);
+        mediaworld_imageview.setVisibility(View.GONE);
+        zara_imageview.setVisibility(View.GONE);
     }
 
 }
