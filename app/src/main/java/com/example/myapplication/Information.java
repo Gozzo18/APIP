@@ -232,6 +232,7 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
                 changeActivity.putExtra("globalVariables", globalVariables);
                 startActivity(changeActivity);
             });
+
         });
 
         weatherButton.setOnClickListener(v->{
@@ -337,11 +338,18 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         });
 
         // Affirmation animation
+        String welcome_text;
+        if(globalVariables.getBlind()){
+            welcome_text="How can I help you? I can tell you directions, the weather, a joke or what time it is.";
+        }
+        else{
+            welcome_text="How can I help you?";
+        }
         Animation affirmationAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.affirmation_a004).build();
         affirmationAnimation = AnimateBuilder.with(qiContext).withAnimation(affirmationAnimationObject).build();
         affirmationAnimation.addOnStartedListener(()->{
             if (!globalVariables.getDeaf()){
-                Future<Say> askInformation = SayBuilder.with(qiContext).withText("How can I help you?").buildAsync();
+                Future<Say> askInformation = SayBuilder.with(qiContext).withText(welcome_text).buildAsync();
                 askInformation.andThenConsume(say -> say.async().run().andThenConsume(consume -> {
                     if (!globalVariables.getMute()) {
                         listen();
@@ -353,6 +361,14 @@ public class Information extends RobotActivity implements RobotLifecycleCallback
         // Tablet focus animation
         Animation tabletfocusAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a004).build();
         tabletfocusAnimation = AnimateBuilder.with(qiContext).withAnimation(tabletfocusAnimationObject).build();
+        if (!globalVariables.getDeaf()){
+            tabletfocusAnimation.addOnStartedListener(()->{
+                if (!globalVariables.getDeaf()) {
+                    Say where = SayBuilder.with(qiContext).withText("Where do you wish to go?").build();
+                    where.run();
+                }
+            });
+        }
 
         Animation humorAnimationObject = AnimationBuilder.with(qiContext).withResources(R.raw.show_tablet_a002).build();
         humorAnimation = AnimateBuilder.with(qiContext).withAnimation(humorAnimationObject).build();
