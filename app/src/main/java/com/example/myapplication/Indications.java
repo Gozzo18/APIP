@@ -98,9 +98,9 @@ public class Indications  extends RobotActivity implements RobotLifecycleCallbac
     public void onRobotFocusGained(QiContext qiContext) {
         this.qiContext = qiContext;
 
-        phrase_set_Burger_King = PhraseSetBuilder.with(qiContext).withTexts("hamburger", "Burger King", "fast food").build();
+        phrase_set_Burger_King = PhraseSetBuilder.with(qiContext).withTexts("hamburger", "Burger King", "fast food", "eat", "eating", "hungry", "starving").build();
         phrase_set_Zara = PhraseSetBuilder.with(qiContext).withTexts("Zara", "clothes").build();
-        phrase_set_Conad = PhraseSetBuilder.with(qiContext).withTexts("Conad", "grocery").build();
+        phrase_set_Conad = PhraseSetBuilder.with(qiContext).withTexts("Conad", "grocery", "groceries").build();
         phrase_set_Brico = PhraseSetBuilder.with(qiContext).withTexts("Brico", "bricolage", "DIY").build();
         phrase_set_Mediaworld = PhraseSetBuilder.with(qiContext).withTexts("Mediaworld", "technology", "smartphone").build();
         phrase_set_KIKO = PhraseSetBuilder.with(qiContext).withTexts("KIKO", "make up").build();
